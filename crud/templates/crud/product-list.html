@@ -1,5 +1,5 @@
 {% extends 'crud/base.html' %}
-
+{% load custom_filters %}
 {% block title %}Productos{% endblock %}
 
 {% load static %}
@@ -35,8 +35,8 @@
                 <thead class="table-head">
                     <tr>
                         <th>Producto</th>
-                        <th>Cámaras</th>
-                        <th>Canales</th>
+                        <th>Categoría</th>
+                        <th>Sabores</th>
                         <th>Imagen</th>
                         <th>Acciones</th>
                     </tr>
@@ -48,10 +48,15 @@
                             <h6><a class="card-link text-decoration-none" href="">{{p.product}}</a></h6>
                         </td>
                         <td>
-                            <h6><a class="card-link text-decoration-none" href="">{{p.cameras}}</a></h6>
+                            <h6><a class="card-link text-decoration-none" href="{% url 'filter-by-category' category=p.category %}">{{ category_dict|dict_get:p.category }}</a></h6>
                         </td>
                         <td>
-                            <h6><a class="card-link text-decoration-none" href="">{{p.channels}}</a></h6>
+                            <h6>
+                                {% for f in p.flavor.all %}
+                                <a class="card-link text-decoration-none" href="{% url 'filter-by-flavor' flavor=f.flavor %}"> {{ f.flavor }}{% if not forloop.last %}, {% endif %} </a>
+                                
+                                {% endfor %}
+                            </h6>
                         </td>
                         <td>
                             {% if p.image %}

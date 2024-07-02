@@ -16,7 +16,7 @@
 <script src="{% static 'core/js/navscript.js' %}"></script>
 
 <script>
-    const backgroundImageUrl = "{% static 'core/img/navbar.jpg' %}";
+    const backgroundImageUrl = "{% static 'core/img/navbar.png' %}";
     setNavbarBackgroundOnScroll(backgroundImageUrl);
 </script>
 {% endblock %}
@@ -24,7 +24,7 @@
 {% block first_content %}
 <div class="indexBody">
     <div class="banner">
-        <img src="{% static 'core/img/carrusel_bg.jpg' %}" alt="">
+        <img src="{% static 'core/img/galletitas_bg.jpg' %}" alt="">
     </div>
 
     {% include 'core/cards.html' %}
@@ -33,24 +33,23 @@
     <div class="categories">
         <div class="category">
             <a href="{% url 'catalogo' %}">
-                <img src="{% static 'core/img/categorias/catalogo.png' %}" alt="Categoría 1">
+                <img src="{% static 'core/img/categorias/catalogo.jpg' %}" alt="Categoría 1">
                 <h4 class="category-title">Catálogo</h4>
             </a>
         </div>
         <div class="category">
             <a href="">
-                <img src="{% static 'core/img/categorias/accesorios.png' %}" alt="Categoría 2">
-                <h4 class="category-title">Accesorios</h4>
+                <img src="{% static 'core/img/categorias/galletas.jpg' %}" alt="Categoría 2">
+                <h4 class="category-title">Galletas</h4>
             </a>
         </div>
         <div class="category">
             <a href="">
-                <img src="{% static 'core/img/categorias/kits.png' %}" alt="Categoría 2">
-                <h4 class="category-title">Kits</h4>
+                <img src="{% static 'core/img/categorias/desayunos.jpg' %}" alt="Categoría 2">
+                <h4 class="category-title">Desayunos</h4>
             </a>
         </div>
     </div>
-</div>
 {% endblock %}
 
 

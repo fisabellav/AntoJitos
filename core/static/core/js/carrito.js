@@ -29,17 +29,21 @@ export const addToCart = (productData) => {
             id: productData.id,
             name: productData.name,
             image: productData.image,
-            quantity: 1,
+            quantity: productData.quantity || 1,  // Utiliza productData.quantity si está presente, de lo contrario 1
         }];
     } else if (positionThisProductInCart < 0) {
         cart.push({
             id: productData.id,
             name: productData.name,
             image: productData.image,
-            quantity: 1,
+            quantity: productData.quantity || 1,  // Utiliza productData.quantity si está presente, de lo contrario 1
         });
     } else {
-        cart[positionThisProductInCart].quantity += 1; 
+        if (productData.quantity) {
+            cart[positionThisProductInCart].quantity += productData.quantity;
+        } else {
+            cart[positionThisProductInCart].quantity += 1;
+        }
     }
     addCartToHTML();
     saveCartToLocalStorage(); // Guardar el carrito en el almacenamiento local después de actualizarlo

@@ -20,5 +20,6 @@ urlpatterns = [
     path('login', views.login, name='login'),
     path('signup', views.signup, name='signup'),
     path('cargar_comunas_rm_desde_api/', views.cargar_comunas_rm_desde_api, name='cargar_comunas_rm_desde_api'),
+    path('complete-registration/<str:token>/', views.complete_registration, name='complete-registration'),
     path('logout', views.logout, name='logout'),
 ]

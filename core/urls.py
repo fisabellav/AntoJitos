@@ -7,6 +7,9 @@ urlpatterns = [
     path('catalogo/filter/', views.filter_products, name='filter_products'),
     path ('contacto/', views.contacto, name='contacto'),
     path ('producto/<id>', views.producto, name='producto'),
-    
+    path ('cookies/', views.cookies, name='cookies'),
+    path ('cookies/filter/', views.filter_cookies, name='filter_cookies'),
+    path ('breakfast/', views.breakfast, name='breakfast'),
+    path ('about/', views.about, name='about'),
     path('editar-perfil', views.editar_perfil, name='editar-perfil'),
 ]

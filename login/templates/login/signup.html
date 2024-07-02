@@ -4,79 +4,133 @@
 
 {% load static %}
 
+
 {% block content %}
 
+{% if messages %}
+<div class="alert {{ request.session.level_mensaje }} alert-dismissible" role="alert">
+    <ul>
+        {% for message in messages %}
+        <li><strong>{{message}}</strong></li>
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </ul>
+</div>
+{% endif %}
 
-    {% if messages %}
-    <div class="alert {{ request.session.level_mensaje }} alert-dismissible" role="alert">
-        <ul>
-            {% for message in messages %}
-            <li><strong>{{message}}</strong></li>
-            {% endfor %}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </ul>
-    </div>
-    {% endif %}
-
-    <div class="container-fluid">
-        <form action="/accounts/signup" method="POST">
-            {% csrf_token %}
-            <div class="card border-0 mx-auto mycardsignup py-4">
-                <div class="" >
-                    <h2 class="card-title text-center">Registrarse</h2>
+<div class="container-fluid">
+    <form action="/accounts/signup" class="row g-2 p-md-5 p-3 custom-validation" method="POST">
+        {% csrf_token %}
+        <div class="card border-0 mx-auto mycardsignup py-4">
+            <div class="">
+                <h2 class="card-title text-center">Registrarse</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-0 mb-md-3 row">
+                    <div class="col-12 col-md-6 mt-3 mt-md-0">
+                        <label for="idNombre" class="col-sm-3 col form-label fw-bold">Nombre</label>
+                        <input class="form-control" type="text" name="first_name" id="idNombre" value="{{ first_name }}"
+                            maxlength="30" required>
+                        <small id="error_nombre_min" class="text-danger">Debes ingresar tu nombre</small>
+                        <small id="error_nombre_max" class="text-danger">El nombre excede el largo máximo
+                            permitido</small>
+                    </div>
+                    <div class="col-12 col-md-6 mt-3 mt-md-0">
+                        <label for="idApellido" class="col-sm-3 col form-label fw-bold">Apellido</label>
+                        <input class="form-control" type="text" name="last_name" id="idApellido" value="{{ last_name }}"
+                            maxlength="30" required>
+                        <small id="error_apellido_min" class="text-danger">Debes ingresar tu apellido</small>
+                        <small id="error_apellido_max" class="text-danger">El apellido excede el largo máximo
+                            permitido</small>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="mb-3 row">
-                        <label for="first_name" class="col-sm-3 col-form-label fw-bold">Nombre</label>
-                        <div class="col-sm 9">
-                            <input class="form-control" type="text" name="first_name" id="first_name" value="{{ first_name }}" maxlength=30 required>
+                <div class="mb-0 mb-md-3 row">
+                    <div class="col-12 col-md-6 mt-3 mt-md-0">
+                        <label for="idFono" class="col-6 col form-label fw-bold">Teléfono</label>
+                        <div class="">
+                            <input type="hidden" id="prefijo-hidden" name="prefijo_telefono" value="+" />
+                            <input class="form-control" type="text" name="phone_number" id="idFono"
+                                value="{{ phone_number }}" maxlength="15" required>
                         </div>
+                        <small id="error_fono" class="text-danger">Debes ingresar un teléfono para contactarte</small>
+
                     </div>
-                    <div class="mb-3 row">
-                        <label for="last_name" class="col-sm-3 col-form-label fw-bold">Apellido</label>
-                        <div class="col-sm 9">
-                            <input class="form-control" type="text" name="last_name" id="last_name" value="{{ last_name }}" maxlength=30 required>
-                        </div>
+                    <div class="col-12 col-md-6 mt-3 mt-md-0">
+                        <label for="idFecha_nac" class="col-12 col-md-6 form-label fw-bold">Fecha nacimiento</label>
+                        <input class="form-control" type="date" name="birthday" id="idFecha_nac" value="{{ birthday }}"
+                            required>
+                        <small id="error_nacimiento" class="text-danger">Debes ingresar fecha de nacimiento</small>
+                        <small id="error_fecha" class="text-danger">Debes ingresar fecha válida</small>
                     </div>
-                    <div class="mb-3 row">
+                </div>
+                <div class="mb-0 mb-md-3 row">
+                    <div class="col-12 col-md-6 mt-3 mt-md-0">
                         <label for="email" class="col-sm-3 col-form-label fw-bold">Correo</label>
-                        <div class="col-sm 9">
-                            <input class="form-control" type="email" name="email" id="email" value="{{ email }}"  maxlength=100 required>
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="password" class="col-sm-3 col-form-label fw-bold">Contraseña</label>
-                        <div class="col-sm 9">
-                            <input class="form-control" type="password" name="password" id="password" required>
-                            <ul class="fst-italic fs-6">
-                                <li>La contraseña debe tener al entre 8 y 16 caracteres</li>
-                                <li>Al menos un dígito</li>
-                                <li>Al menos una minúscula y al menos una mayúscula</li>
-                                <li>NO puede tener otros símbolos.</li>
-                            </ul>
-                        </div>
-                        
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="password_confirm" class="col-sm-3 col-form-label fw-bold">Repetir contraseña</label>
-                        <div class="col-sm 9">
-                            <input class="form-control" type="password" name="password_confirm" id="password_confirm" required>
-                        </div>
+                        <input class="form-control" type="email" name="email" id="email" value="{{ email }}"
+                            maxlength="100" required>
+                        <small id="error_email" class="text-danger">Debes ingresar un email válido</small>
                     </div>
                 </div>
-                <div class="card-footer text-center bg-transparent border-0">
-                    <div class="d-grid gap-2 col-6 mx-auto">
-                        <input class="btn btn-primary" type="submit" value="Registrar">
-                        <input class="btn btn-light" type="reset" value="Limpiar datos">
+                <div class="mb-0 mb-md-3 row">
+                    <div class="col-12 col-md-6 mt-3 mt-md-0">
+                        <label for="gender" class="col-sm-3 col-form-label fw-bold">Género</label>
+                        <select class="form-control" name="gender" id="gender" required>
+                            {% for choice in gender_choices %}
+                            <option value="{{ choice.0 }}" {% if choice.0 == gender %}selected{% endif %}>{{ choice.1 }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
+                    <div class="col-12 col-md-6 mt-3 mt-md-0">
+                        <label for="comuna-select" class="col-sm-3 col-form-label fw-bold">Comuna</label>
+                        <select class="form-control" name="comuna" id="comuna" required>
+                            {% for comuna in comuna_choices %}
+                                <option value="{{ comuna.id }}">{{ comuna.comuna }}</option>
+                            {% endfor %}
+                        </select>
+                        <small id="error_comuna" class="text-danger">Debes ingresar una comuna</small>
+                    </div>
+                </div>
+                <div class="mb-0 mb-md-3 row">
+                    <div class="col-12 col-md-6 mt-3 mt-md-0">
+                        <label for="password" class="col-sm-6 col-form-label fw-bold">Contraseña</label>
+                        <input class="form-control" type="password" name="password" id="password" required>
+                        <ul class="fst-italic fs-6">
+                            <li>La contraseña debe tener al entre 8 y 16 caracteres</li>
+                            <li>Al menos un dígito</li>
+                            <li>Al menos una minúscula y al menos una mayúscula</li>
+                            <li>NO puede tener otros símbolos.</li>
+                        </ul>
+                    </div>
+                    <div class="col-12 col-md-6 mt-3 mt-md-0">
+                        <label for="password_confirm" class="col-sm-6 col-form-label fw-bold">Repetir contraseña</label>
+                        <input class="form-control" type="password" name="password_confirm" id="password_confirm"
+                            required>
+                    </div>
+                </div>
+                <div class="col-12 my-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="gridCheck">
+                        <label class="form-check-label" for="gridCheck">
+                            No soy un robot
+                        </label>
+                    </div>
+                    <small id="error_checkbox" class="text-danger">Debes chequear la casilla</small>
                 </div>
             </div>
-        </form>
-    </div>
+            <div class="card-footer text-center bg-transparent border-0">
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <input class="btn btn-primary" type="submit" value="Registrar">
+                    <input class="btn btn-light" type="reset" value="Limpiar datos">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
 {% endblock %}
 
 {% block my_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <script src="{% static 'login/js/login.js' %}"></script>
+<script src="{% static 'core/js/formulario.js' %}"></script>
 {% endblock %}
-

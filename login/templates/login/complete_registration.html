@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Registration</title>
+</head>
+<body>
+    <h2>Complete Registration</h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="password" name="password" placeholder="Contraseña" required>
+        <input type="password" name="password_confirm" placeholder="Confirmar contraseña" required>
+        <button type="submit">Establecer contraseña</button>
+    </form>
+</body>
+</html>

@@ -12,16 +12,20 @@ a:hover{
 }
 
 .add-product{
-    background-color: #28799f;
-    border-color: #28799f;
+    background-color: #9179A8;
+    border-color: #9179A8;
     border-radius: 12px;
     color: white;
     padding: 5px 10px;
     
 }
 
+
+
+
 .add-product:hover{
-    background-color: #236d8f;
+    background-color: #7F6799;
+    border-color: #7F6799;
     color: white;
     scale: 1.02;
 }

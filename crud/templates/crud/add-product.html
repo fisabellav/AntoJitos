@@ -1,6 +1,6 @@
 {% extends 'crud/base.html' %}
 
-{% block title %}Asignaturas{% endblock %}
+{% block title %}Agregar{% endblock %}
 
 {% load static %}
 
@@ -13,36 +13,36 @@
     <div id="container_new" class="container px-0 mx-0 mb-2 py-3 text-center">
         <h3>Formulario registro nuevos productos</h3>
     </div>
-    <div class="container myform my-2 pt-2 p-5">
-        <form class="row g-3" action="" method="post" enctype="multipart/form-data">
+    <div class="container myform my-2 pt-2 p-2 p-md-5">
+        <form class="row g-0 g-md-3" action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="col-md-12 form-group mb-3">
                 <label for="product" class="fw-bold">Producto</label>
-                <div class="input-group">
+                <div class="input-group mt-2">
                     {{ form.product }}
                 </div>
             </div>
             <div class="col-md-12 form-group mb-3">
                 <label for="description" class="fw-bold">Descripción</label>
-                <div class="input-group">
+                <div class="input-group mt-2">
                     {{ form.description }}
                 </div>
             </div>
             <div class="col-md-6 form-group mb-3">
-                <label for="cameras" class="fw-bold">Cámaras</label>
-                <div class="input-group">
-                    {{ form.cameras }}
+                <label for="category" class="fw-bold">Categoría</label>
+                <div class="input-group mt-2">
+                    {{ form.category }}
                 </div>
             </div>
             <div class="col-md-6 form-group mb-3">
-                <label for="channels" class="fw-bold">Canales</label>
-                <div class="input-group">
-                    {{ form.channels }}
+                <label for="flavor" class="fw-bold">Sabores</label>
+                <div class="input-group mt-2">
+                    {{ form.flavor }}
                 </div>
             </div>
             <div class="col-md-12 form-group mb-3">
                 <label for="image" class="fw-bold">Imagen</label>
-                <div class="input-group">
+                <div class="input-group mt-2">
                     {{ form.image }}
                 </div>
                 {% if form.instance.image %}
@@ -54,9 +54,17 @@
                 {% endif %}
             </div>
             <div class="text-end">
-                <input type="submit" class="btn btn-primary me-2" id="registrar" value="Registrar">
-                <input type="reset" class="btn btn-reset me-2" id="restablecer" value="Restablecer">
-                <a class="btn btn-secondary" href="{% url 'product-list' %}">Volver</a>
+                <div class="row row-cols-1 row-cols-md-3 d-flex flex-row-reverse g-3 g-md-0 text-end">
+                    <div class="col-12 col-md-1 ">
+                        <input type="submit" class="btn btn-primary me-2" id="registrar" value="Registrar">
+                    </div>
+                    <div class="col-12 col-md-2 text-md-center">
+                        <input type="reset" class="btn btn-reset me-2" id="restablecer" value="Restablecer">
+                    </div>
+                    <div class="col-12 col-md-1 me-2">
+                        <a class="btn btn-secondary" href="{% url 'product-list' %}">Volver</a></div>
+                    </div>
+                </div>
             </div>
         </form>
     </div>

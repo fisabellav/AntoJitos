@@ -11,23 +11,21 @@ class UserManager(models.Manager):
 
         errors = {}
 
-        if len(User.objects.filter(email=postData['email'])) > 0:
-            errors['email_exits'] = "Email ya registrado!!!"
-        else:
-            if len(postData['first_name'].strip()) < 2 or len(postData['first_name'].strip()) > 30:
-                errors['first_name_len'] = "Nombre debe tener entre 2 y 30 caracteres"
+        
+        if len(postData['first_name'].strip()) < 2 or len(postData['first_name'].strip()) > 30:
+            errors['first_name_len'] = "Nombre debe tener entre 2 y 30 caracteres"
 
-            if len(postData['last_name'].strip()) < 2 or len(postData['last_name'].strip()) > 30:
-                errors['last_name_len'] = "Apellido debe tener entre 2 y 30 caracteres"
+        if len(postData['last_name'].strip()) < 2 or len(postData['last_name'].strip()) > 30:
+            errors['last_name_len'] = "Apellido debe tener entre 2 y 30 caracteres"
+        
+        if not JUST_LETTERS.match(postData['first_name']) or not JUST_LETTERS.match(postData['last_name']):
+            errors['just_letters'] = "Solo se permite el ingreso de letras en el nombre y apellido"
             
-            if not JUST_LETTERS.match(postData['first_name']) or not JUST_LETTERS.match(postData['last_name']):
-                errors['just_letters'] = "Solo se permite el ingreso de letras en el nombre y apellido"
-                
-            if not EMAIL_REGEX.match(postData['email']):
-                errors['email'] = "Formato correo no válido"
-            
-            if not PASSWORD_REGEX.match(postData['password']):
-                errors['password_format'] = "Formato contraseña no válido"
+        if not EMAIL_REGEX.match(postData['email']):
+            errors['email'] = "Formato correo no válido"
+        
+        if not PASSWORD_REGEX.match(postData['password']):
+            errors['password_format'] = "Formato contraseña no válido"
 
         #if len(postData['password']) < 8 or len(postData['password']) > 15:
         #    errors['password_len'] = "La cantidad de caracteres debe ser entre 8 y 15" 
@@ -64,6 +62,7 @@ class User(models.Model):
     rol = models.CharField(max_length=20, default='USER')
     created_at = models.DateTimeField(verbose_name='Fecha registro', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Fecha actualización', auto_now=True)
+    verification_token = models.CharField(max_length=100, blank=True, null=True)
     objects = UserManager()
 
     class Meta:
@@ -80,4 +79,6 @@ class User(models.Model):
             self.last_name = 'Apellido por defecto'
         if not self.phone_number:
             self.phone_number = 'Teléfono por defecto'
+        if not self.email:
+            self.email = 'Correo por defecto'
         super().save(*args, **kwargs)  

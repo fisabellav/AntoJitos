@@ -15,130 +15,131 @@
 <script src="{% static 'core/js/navscript.js' %}"></script>
 
 <script>
-    const backgroundImageUrl = "{% static 'core/img/navbar2.jpg' %}";
+    const backgroundImageUrl = "{% static 'core/img/navbar.png' %}";
     setNavbarBackgroundOnScroll(backgroundImageUrl);
 </script>
 {% endblock %}
 
 {% block first_content %}
 <div class="banner">
-    <img src="{% static 'core/img/camera.jpg' %}" alt="">
+    <img src="{% static 'core/img/brownie_bg.jpg' %}" alt="">
 </div>
 
 <!-- CATEGORIAS -->
 <div class="categories">
     <div class="category">
         <a href="{% url 'catalogo' %}">
-            <img src="{% static 'core/img/categorias/catalogo.png' %}" alt="Categoría 1">
+            <img src="{% static 'core/img/categorias/catalogo.jpg' %}" alt="Categoría 1">
             <h4 class="category-title">Catálogo</h4>
         </a>
     </div>
     <div class="category">
-        <a href="">
-            <img src="{% static 'core/img/categorias/accesorios.png' %}" alt="Categoría 2">
-            <h4 class="category-title">Accesorios</h4>
+        <a href="{% url 'cookies' %}">
+            <img src="{% static 'core/img/categorias/galletas.jpg' %}" alt="Categoría 2">
+            <h4 class="category-title">Galletas</h4>
         </a>
     </div>
     <div class="category">
-        <a href="">
-            <img src="{% static 'core/img/categorias/kits.png' %}" alt="Categoría 2">
-            <h4 class="category-title">Kits</h4>
+        <a href="{% url 'breakfast' %}">
+            <img src="{% static 'core/img/categorias/desayunos.jpg' %}" alt="Categoría 2">
+            <h4 class="category-title">Desayunos</h4>
         </a>
     </div>
 </div>
 
-<div class="mycatalogo">
-    <!-- FILTROS -->
-    <div id="filters">
-        <h3 class="filter-title">Filters</h3>
-        <!-- Número de cámaras -->
-        <div class="filter-group">
-            <h3 class="filter-group-title">Número de cámaras</h3>
-            <div class="row">
-                <div class="col-12">
-                    <select id="camera-filter" name="cameras" class="form-select myselect" multiple>
-                        {% for f in filtro_camara %}
-                        <option value="{{ f }}" {% if f in selected_cameras %}selected{% endif %}>{{ f }}</option>
-                        {% endfor %}
-                    </select>
+<div class="container-fluid">
+    <div class="row m-0">
+        <div id="myFilters" class="col-3">
+            <!-- FILTROS -->
+            <div id="filters" class="p-3">
+                <h3 class="filter-title">Filters</h3>
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Categoría -->
+                        <div class="filter-group">
+                            <h3 class="filter-group-title">Categoría</h3>
+                            <div class="row">
+                                <div class="col-12">
+                                    <select id="category-filter" name="categories" class="form-select myselect mt-2"
+                                        multiple>
+                                        {% for f in filtro_categoria %}
+                                        <option value="{{ f }}" {% if f in selected_categories %}selected{% endif %}>{{ f }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <!-- Sabor -->
+                        <div class="filter-group">
+                            <h3 class="filter-group-title">Sabor</h3>
+                            <select id="flavor-filter" name="flavors" class="form-select myselect mt-2" multiple>
+                                {% for f in filtro_sabor %}
+                                <option value="{{ f }}" {% if f in selected_flavors %}selected{% endif %}>{{ f }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-        </div>
-    
-        <!-- Número de canales -->
-        <div class="filter-group">
-            <h3 class="filter-group-title">Número de canales</h3>
-            <select id="channel-filter" name="channels" class="form-select myselect" multiple>
-                {% for f in filtro_canal %}
-                <option value="{{ f }}" {% if f in selected_channels %}selected{% endif %}>{{ f }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
-    
-    <!-- Añadir botón para aplicar filtros -->
-    <div class="apply-filters">
-        <button id="apply-filters-btn" class="btn btn-primary">Aplicar Filtros</button>
-    </div>
 
-    <!-- PRODUCTOS -->
-    <section id="myproducts" class="products">
-        <div class="all-products">
-            {% if filtered_cameras %}
-            {% for p in filtered_cameras %}
-            <div class="product" data-id="{{ p.id }}">
-                {% if p.image %}
-                <img src="{{p.image.url}}">
-                {% endif %}
-                <div class="product-info">
-                    <h4 class="product-title">{{p.product}}</h4>
-                    <p class="product-price">Opción 1</p>
-                </div>
-                <div class="button-container">
-                    <a class="product-btn" href="{% url 'producto' id=p.id %}">Ver Detalles</a>
-                    <i class="deseos fa-regular fa-heart"></i>
-                </div>
+
+
             </div>
-            {% endfor %}
-            {% else %}
-            {% for f in productos %}
-            <div class="product" data-id="{{ f.id }}">
-                {% if f.image %}
-                <img src="{{f.image.url}}">
-                <div class="product-info">
-                    {% endif %}
-                    <h4 class="product-title">{{f.product}}</h4>
-                    <p class="product-price">Opción 1</p>
-                </div>
-                <div class="button-container">
-                    <a class="product-btn" href="{% url 'producto' id=f.id %}">Ver Detalles</a>
-                    <i class="deseos fa-regular fa-heart"></i>
-                </div>
+
+            <!-- Añadir botón para aplicar filtros -->
+            <div class="apply-filters">
+                <button id="apply-filters-btn" class="product-btn ms-3 mt-2">Aplicar Filtros</button>
             </div>
-            {% endfor %}
-            {% endif %}
         </div>
-    </section>
+        <div class="col-9 p-0">
+            <!-- PRODUCTOS -->
+            <div id="myproducts" class="container-fluid p-4">
+                <div class="all-products">
+                    <div class="row row-cols-1 row-cols-lg-4 gy-3 gy-lg-4 mx-auto">
+                        {% for p in productos %}
+                        <div class="col-lg-3 d-flex justify-content-center">
+                            <div class="product" data-id="{{ p.id }}">
+                                {% if p.image %}
+                                <img src="{{ p.image.url }}">
+                                {% endif %}
+                                <div class="product-info">
+                                    <h4 class="product-title">{{ p.product }}</h4>
+                                </div>
+                                <div class="button-container">
+                                    <a class="product-btn" href="{% url 'producto' id=p.id %}">Ver Detalles</a>
+                                    <i class="deseos fa-regular fa-heart"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const applyFiltersBtn = document.getElementById('apply-filters-btn');
-        applyFiltersBtn.addEventListener('click', function() {
-            const cameraFilter = document.getElementById('camera-filter');
-            const channelFilter = document.getElementById('channel-filter');
-            
-            const selectedCameras = Array.from(cameraFilter.selectedOptions).map(option => option.value);
-            const selectedChannels = Array.from(channelFilter.selectedOptions).map(option => option.value);
-            
+        applyFiltersBtn.addEventListener('click', function () {
+            const categoryFilter = document.getElementById('category-filter');
+            const flavorFilter = document.getElementById('flavor-filter');
+
+            const selectedCategories = Array.from(categoryFilter.selectedOptions).map(option => option.value);
+            const selectedFlavors = Array.from(flavorFilter.selectedOptions).map(option => option.value);
+
             const url = new URL(window.location.href);
-            url.searchParams.delete('cameras');
-            url.searchParams.delete('channels');
-            
-            selectedCameras.forEach(camera => url.searchParams.append('cameras', camera));
-            selectedChannels.forEach(channel => url.searchParams.append('channels', channel));
-            
+            url.searchParams.delete('categories');
+            url.searchParams.delete('flavors');
+
+            selectedCategories.forEach(category => url.searchParams.append('categories', category));
+            selectedFlavors.forEach(flavor => url.searchParams.append('flavors', flavor));
+
             window.location.href = url.toString();
         });
     });
@@ -150,30 +151,3 @@
 <script src="{% static 'core/js/catalogo.js' %}"></script>
 <script type="module" src="{% static 'core/js/addwish.js' %}"></script>
 {% endblock %}
-
-<!-- <div class="price-filter">
-            <h3 class="filter-group-title">Rango de precios</h3>
-            <div class="price-slider">
-                <input type="range" min="0" max="1000" step="100" value="1000" class="price-range" id="price-range">
-                <div class="price-labels">
-                    <span class="price-label" id="price-label-min">$0</span>
-                    <span class="price-label" id="price-label-max">$1000</span>
-                </div>
-            </div>
-        </div> -->
-        <!-- <script>
-            const priceRange = document.querySelector('#price-range');
-            const priceLabelMin = document.querySelector('#price-label-min');
-            const priceLabelMax = document.querySelector('#price-label-max');
-
-            priceRange.addEventListener('input', () => {
-                console.log("holaa")
-                const minPrice = priceRange.value;
-                const maxPrice = priceRange.max;
-                const labelMin = `$${minPrice}`;
-                const labelMax = `$${maxPrice}`;
-
-                priceLabelMin.textContent = labelMin;
-                priceLabelMax.textContent = labelMax;
-            });
-        </script> -->

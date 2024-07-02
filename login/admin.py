@@ -13,3 +13,4 @@ class ComunaAdmin(admin.ModelAdmin):
 
 admin.site.register(Comuna,ComunaAdmin)
 admin.site.register(User, UserAdmin)
+

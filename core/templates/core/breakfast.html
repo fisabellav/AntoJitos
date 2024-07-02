@@ -1,0 +1,57 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Breakfast{% endblock %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/index.css' %}">
+<link rel="stylesheet" href="{% static 'core/css/category.css' %}">
+<link rel="stylesheet" href="{% static 'core/css/catalogo.css' %}">
+{% endblock %}
+
+{% block navbar_script %}
+<script src="{% static 'core/js/navscript.js' %}"></script>
+
+<script>
+    const backgroundImageUrl = "{% static 'core/img/navbar3.png' %}";
+    setNavbarBackgroundOnScroll(backgroundImageUrl);
+</script>
+{% endblock %}
+
+{% block first_content %}
+<div class="banner">
+    <img src="{% static 'core/img/desayuno_bg.jpg' %}" alt="">
+</div>
+
+<div class="container-fluid">
+
+    <!-- PRODUCTOS -->
+    <section id="myproducts" class="container-fluid">
+        <div class="all-products">
+            {% for p in productos %}
+            <div class="product" data-id="{{ p.id }}">
+                {% if p.image %}
+                <img src="{{ p.image.url }}">
+                {% endif %}
+                <div class="product-info">
+                    <h4 class="product-title">{{ p.product }}</h4>
+                </div>
+                <div class="button-container">
+                    <a class="product-btn" href="{% url 'producto' id=p.id %}">Ver Detalles</a>
+                    <i class="deseos fa-regular fa-heart"></i>
+                </div>
+            </div>
+            {% endfor %}
+                
+        </div>
+    </section>
+
+</div>
+
+{% endblock %}
+
+{% block my_js %}
+<script src="{% static 'core/js/catalogo.js' %}"></script>
+<script type="module" src="{% static 'core/js/addwish.js' %}"></script>
+{% endblock %}

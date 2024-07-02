@@ -1,6 +1,7 @@
-{% extends 'crud/base.html' %}
 
-{% block title %}Asignaturas{% endblock %}
+{% extends 'crud/base.html' %}
+{% load custom_filters %}
+{% block title %}Cookie{% endblock %}
 
 {% load static %}
 
@@ -14,22 +15,28 @@
 
 <div class="container mycont">
     <div class="row">
-        <div class="col col-md-7 col-lg-6">
+        <div class="col-12 col-md-7 col-lg-6">
             {% if producto.image %}
             <img class="img-fluid detail-img" src="{{producto.image.url}}" alt="">
             {% endif  %}
 
         </div>
-        <div class="col col-lg-6">
+        <div class="col-12 col-lg-6">
             <div class="row">
                 <div class="col-12">
                     <ul class="row list-unstyled">
-                        <li class=" col-md-12 mb-2">
+                        <li class=" col-md-12 my-2">
                             <h2> {{producto.product}}</h2>
                             </li>
-                        <li class=" col-md-12 mb-2">Descripción: <p class="">{{producto.description}}</p></li>
-                        <li class=" col-md-12 mb-2">Cámaras: <p class="">{{producto.cameras}}</p></li>
-                        <li class=" col-md-12 mb-2">Canales: <p class="">{{producto.channels}}</p></li>
+                        <li class=" col-md-12 mb-2 mt-3">Descripción: <p class="">{{producto.description}}</p></li>
+                        <li class=" col-md-12 mb-2">Categoría: <p class="">{{ category_dict|dict_get:producto.category }}</p></li>
+                        <li class=" col-md-12 mb-2">Sabores:
+                        <!-- Mostrar los sabores -->
+                        <p>
+                            {% for f in producto.flavor.all %}
+                                {{ f.flavor }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
                         <li class="mb-2 text-muted fst-italic">Registrado: <p class="fw-bold">{{producto.created_at}}</p></li>
                         <li class="mb-2 text-muted fst-italic">Última actualización: <p class="fw-bold">{{producto.updated_at}}</p></li>
                     </ul>

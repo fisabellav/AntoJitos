@@ -1,0 +1,103 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Cookies{% endblock %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/index.css' %}">
+<link rel="stylesheet" href="{% static 'core/css/category.css' %}">
+<link rel="stylesheet" href="{% static 'core/css/catalogo.css' %}">
+{% endblock %}
+
+{% block navbar_script %}
+<script src="{% static 'core/js/navscript.js' %}"></script>
+
+<script>
+    const backgroundImageUrl = "{% static 'core/img/navbar2.jpg' %}";
+    setNavbarBackgroundOnScroll(backgroundImageUrl);
+</script>
+{% endblock %}
+
+{% block first_content %}
+<div class="banner">
+    <img src="{% static 'core/img/cookies_bg.jpg' %}" alt="">
+</div>
+
+<div class="container-fluid p-0">
+    <div class="row m-0">
+        <div id="myFilters" class="col-lg-3">
+            <!-- FILTROS -->
+            <div id="filters" class="p-4">
+                <h3 class="filter-title">Filtros</h3>
+
+                <!-- Sabor -->
+                <div class="filter-group">
+                    <h3 class="filter-group-title">Sabor</h3>
+                    <select id="flavor-filter" name="flavors" class="form-select myselect mt-2" multiple>
+                        {% for f in filtro_sabor %}
+                        <option value="{{ f }}" {% if f in selected_flavors %}selected{% endif %}>{{ f }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Añadir botón para aplicar filtros -->
+                <div class="apply-filters mt-3">
+                    <button id="apply-filters-btn" class="product-btn mt-2">Aplicar Filtros</button>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-lg-9 p-0">
+            <!-- PRODUCTOS -->
+            <section id="myproducts" class="container-fluid p-4">
+                <div class="all-products mx-auto ">
+                    <div class="row row-cols-1 row-cols-lg-4 g-3 g-lg-4 mx-auto">
+                        {% for p in productos %}
+                        <div class="col-lg-3 d-flex justify-content-center">
+                            <div class="product" data-id="{{ p.id }}">
+                                {% if p.image %}
+                                <img src="{{ p.image.url }}" class="img-fluid" alt="">
+                                {% endif %}
+                                <div class="product-info">
+                                    <h4 class="product-title">{{ p.product }}</h4>
+                                </div>
+                                <div class="button-container">
+                                    <a class="btn btn-secondary product-btn" href="{% url 'producto' id=p.id %}">Ver
+                                        Detalles</a>
+                                    <i class="deseos fa-regular fa-heart ms-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const applyFiltersBtn = document.getElementById('apply-filters-btn');
+        applyFiltersBtn.addEventListener('click', function () {
+            const flavorFilter = document.getElementById('flavor-filter');
+            const selectedFlavors = Array.from(flavorFilter.selectedOptions).map(option => option.value);
+
+            const url = new URL(window.location.href);
+            url.searchParams.delete('flavors');
+
+            selectedFlavors.forEach(flavor => url.searchParams.append('flavors', flavor));
+
+            window.location.href = url.toString();
+        });
+    });
+</script>
+
+{% endblock %}
+
+{% block my_js %}
+<script src="{% static 'core/js/catalogo.js' %}"></script>
+<script type="module" src="{% static 'core/js/addwish.js' %}"></script>
+{% endblock %}

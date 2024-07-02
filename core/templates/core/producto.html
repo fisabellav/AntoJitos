@@ -14,7 +14,7 @@
 
 {% block navbar_script %}
 <script>
-    const backgroundImageUrl = "{% static 'core/img/navbar2.jpg' %}";
+    const backgroundImageUrl = "{% static 'core/img/navbar.png' %}";
     const navbarElement = document.querySelector('.myNavbar');
     navbarElement.style.backgroundImage = `url(${backgroundImageUrl})`;
 </script>
@@ -22,12 +22,12 @@
 
 {% block first_content %}
 <div class="product-detail">
-    <div class="product" data-id="{{ p.id }}">
-        <div class="row ">
-            <div class="col">
+    <div class="product container-fluid " data-id="{{ p.id }}">
+        <div class="row mx-auto justify-content-center px-0">
+            <div class="col-7">
                 {% if producto.image %}
                 <div class=" row justify-content-center">
-                    <div class="col-12 col-lg-3 thumbnails">
+                    <div class="col-12 col-lg-3  thumbnails">
                         <div class="row row-cols-3 row-cols-lg-1 ">
                             <div class="col">
                                 <img class="img-fluid thumbnail-image" src="{{producto.image.url}}">
@@ -36,13 +36,13 @@
                                 <img class="img-fluid thumbnail-image" src="{{producto.image.url}}">
                             </div>
                             <div class="col">
-                                <img class="img-fluid thumbnail-image" src="{{producto.image.url}}">
+                                <img class="img-fluid thumbnail-image  mb-0" src="{{producto.image.url}}">
                             </div>
                         </div>
                         
                     
                     </div>
-                    <img class=" col img-fluid product-image" src="{{producto.image.url}}">
+                    <img class=" col img-fluid product-image " src="{{producto.image.url}}">
                 </div>
                 {% endif %}
             </div>
@@ -70,6 +70,13 @@
         </div>
     </div>
 </div>
+
+<!-- producto.html -->
+{% if error_message %}
+<div class="container">
+    {{ error_message }}
+</div>
+{% endif %}
 
 <div class="formulario mx-auto">
     <form id="formulario" class="row g-2 p-5 custom-validation" action="" method="post" enctype="multipart/form-data">
@@ -109,11 +116,16 @@
             </div>
         </div>
         <div class="row ">
-            <div class="col-lg-3 col-md-12 mt-3">
+            <div class="col-lg-6 mt-3">
+                <label for="idEmail" class="form-label">Email</label>
+                {{user_form.email}}
+                <small id="error_email" class="text-danger">Debes ingresar un email válido</small>
+            </div>
+            <div class="col-lg-6 mt-3">
                 <label for="genero-select" class="form-label">{{ user_form.gender.label }}</label>
                 {{ user_form.gender }}
             </div>
-            <div class="col-lg-3 col-md-12 mt-3">
+            <div class="col-lg-6 col-md-12 mt-3">
                 <label for="comuna-select" class="form-label">Comuna</label>
                 {{user_form.comuna}}
                 <small id="error_comuna" class="text-danger">Debes ingresar una comuna</small>
@@ -129,19 +141,26 @@
                 <label for="cantidad-seleccionada" class="form-label">Cantidad</label>
                 {{ solicitud_form.quantity }}
             </div>
+            
         </div>
         <h3 class="mt-4">Crea tu cuenta</h3>
         <div class="row">
             <div class="col-lg-6 mt-3">
-                <label for="idEmail" class="form-label">Email</label>
-                {{user_form.email}}
-                <small id="error_email" class="text-danger">Debes ingresar un email válido</small>
-            </div>
-            <div class="col-lg-6 mt-3">
-                <label for="idPassword" class="form-label">Contraseña</label>
+                <label for="password" class="form-label ">Contraseña</label>
                 {{user_form.password}}
-                <small id="error_password" class="text-danger">Debes ingresar una contraseña</small>
+                <ul class="fst-italic fs-8 mt-2">
+                    <li>La contraseña debe tener al entre 8 y 16 caracteres</li>
+                    <li>Al menos un dígito</li>
+                    <li>Al menos una minúscula y al menos una mayúscula</li>
+                    <li>NO puede tener otros símbolos.</li>
+                </ul>
             </div>
+            
+            <div class="col-lg-6 mt-3">
+                <label for="password_confirm" class="form-label">Repetir contraseña</label>
+                <input class="form-control" type="password" name="password_confirm" id="password_confirm">
+            </div>
+        </div>
         <div class="col-12 my-4">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="gridCheck">
@@ -160,7 +179,6 @@
 {% endblock %}
 
 {% block my_js %}
-<script src="{% static 'core/js/producto.js' %}"></script>
+<script type="module" src="{% static 'core/js/producto.js' %}"></script>
 <script src="{% static 'core/js/formulario.js' %}"></script>
-<script type="module" src="{% static 'core/js/addwish.js' %}"></script>
 {% endblock %}

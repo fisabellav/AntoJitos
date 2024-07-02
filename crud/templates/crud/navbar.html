@@ -1,7 +1,7 @@
 {% load static %}
 <section id="navbarbody">
     <div class="navbar">
-        <div class="logo"> <a href=""><img class="logo" src="{%static 'crud/img/logo_icon.png' %}" alt="">Servitel</a>
+        <div class="logo"> <a href=""><img class="logo" src="{%static 'crud/img/logo.png' %}" alt="">Anto'Jitos</a>
         </div>
         <ul class="links">
             <li class="nav-item dropdown">
@@ -10,9 +10,9 @@
                     Añadir
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{% url 'add-product' %}">Kit</a></li>
-                    <li><a class="dropdown-item disabled" href="#">Cámara</a></li>
-                    <li><a class="dropdown-item disabled" href="#">Accesorio</a></li>
+                    <li><a class="dropdown-item" href="{% url 'add-product' %}">Producto</a></li>
+                    <li><a class="dropdown-item disabled" href="#">Sabor</a></li>
+                    <li><a class="dropdown-item disabled" href="#">Usuario</a></li>
                 </ul>
             </li>
             <li><a href="{% url 'product-list' %}">Listar Productos</a></li>
@@ -20,7 +20,7 @@
             
             <div class="items">
                 <a href="{% url 'logout' %}" class="action_btn"><img src="{%static 'crud/img/logout-icon.png' %}" alt="" class="img-icon"></a>
-                <a href="#" class="action_btn"><i class="fa-solid fa-magnifying-glass"></i></a>
+                <a href="https://www.instagram.com/anto_jitooss?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="action_btn"><i class="fa-brands fa-instagram"></i></a>
 
                 <div class="collapse" id="search-field">
                     <input type="text" class="form-control" placeholder="Buscar productos...">
@@ -35,15 +35,31 @@
     </div>
 
     <div class="dropdown_menu">
-        <li><a href="">Home</a></li>
-        <li><a href="">About</a></li>
-        <li><a href="">Services</a></li>
-        <li><a href="">Contact</a></li>
-        <div class="items">
-            <a href="#" class="action_btn"><i class="fa-solid fa-user"></i></a>
-            <a href="#" class="action_btn"><i class="fa-solid fa-magnifying-glass"></i></a>
-            <a href="#" class="action_btn"><i class="fa-solid fa-cart-shopping"></i></a>
-        </div>
+        <ul class="links">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Añadir
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'add-product' %}">Producto</a></li>
+                    <li><a class="dropdown-item disabled" href="#">Sabor</a></li>
+                    <li><a class="dropdown-item disabled" href="#">Usuario</a></li>
+                </ul>
+            </li>
+            <li><a href="{% url 'product-list' %}">Listar Productos</a></li>
+            <li><a href="{% url 'index' %}">Vista Usuario</a></li>
+            
+            <div class="items">
+                <a href="{% url 'logout' %}" class="action_btn"><img src="{%static 'crud/img/logout-icon.png' %}" alt="" class="img-icon"></a>
+                <a href="https://www.instagram.com/anto_jitooss?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="action_btn"><i class="fa-brands fa-instagram"></i></a>
+
+                <div class="collapse" id="search-field">
+                    <input type="text" class="form-control" placeholder="Buscar productos...">
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </div>
+            </div>
+        </ul>
 </section>
 
 <script>

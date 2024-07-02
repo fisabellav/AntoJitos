@@ -82,7 +82,7 @@
 }
 
 .navbar {
-    background-image: url('/static/core/img/navbar.jpg');
+    background-image: url('/static/core/img/navbar2.jpg');
     background-size: cover;
     background-position: center;
     position: fixed;
@@ -112,6 +112,11 @@
 #navbarbody .navbar .items {
     display: flex;
     gap: 1rem;
+    
+}
+
+#navbarbody .navbar .items i {
+    font-size: 1.2rem;
 }
 
 #navbarbody .navbar .toggle_btn {
@@ -182,6 +187,7 @@
 
 .img-icon{
     height: 20px;
+    margin-bottom: 5px;
 }
 
 .mycontainer{

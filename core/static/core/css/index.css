@@ -14,29 +14,11 @@
     object-fit: cover;
 }
 
-/* 
-@media (min-width: 1200px) {
-    .banner {
-        max-height: fit-content;
-    }
-}
 
-@media (max-width: 992px) {
-    .banner{
-        height: 500px;
-    }
-}
-/* Media query for medium screen size */
-/* @media (max-width: 768px) {
-    .banner{
+@media (max-width: 768px) {
+    .banner img{
         height: 400px;
     }
-}
-
-@media (max-width: 480px) {
-    .banner {
-        height: 300px;
-    }
-} */ 
+} 
 
 
