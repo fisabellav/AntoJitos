@@ -1,17 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Registration</title>
-</head>
-<body>
-    <h2>Complete Registration</h2>
+{% extends "login/base.html"%}
+
+{% block title %}Login | Registro{% endblock %}
+
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
     <form method="post">
         {% csrf_token %}
-        <input type="password" name="password" placeholder="Contraseña" required>
-        <input type="password" name="password_confirm" placeholder="Confirmar contraseña" required>
-        <button type="submit">Establecer contraseña</button>
+        
+        
+        
+        <div class="card border-0 mx-auto mycardlogin py-4">
+            <div class="">
+                <h2 class="card-title text-center my-4">Completar registro</h2>
+            </div>
+            <div class="card-body w-100 px-4 mx-auto">
+                <div class="mb-3 row">
+                    <div class="col mb-2">
+                        <input type="password" name="password" placeholder="Contraseña" required>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col mb-2">
+                        <input type="password" name="password_confirm" placeholder="Confirmar contraseña" required>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center bg-transparent border-0">
+                <div class="d-grid gap-2 mx-auto mb-2">
+                    <button type="submit">Establecer contraseña</button>
+                </div>
+            </div>
+        </div>
     </form>
-</body>
-</html>
+</div>
+</div>
+{% endblock %}

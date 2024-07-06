@@ -10,6 +10,7 @@ class UserForm(ModelForm):
     ]
     
     gender = forms.ChoiceField(choices=GENERO_CHOICES, label='Género', widget=forms.Select(attrs={'class': 'form-select', 'id': 'genero-select'}))
+    formatted_phone_number = forms.CharField(widget=forms.HiddenInput(attrs={'id': 'formatted_phone_number'}), required=False)
 
     class Meta:
         model = User

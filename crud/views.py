@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect, reverse  
 from .models import *
+from core.models import *
 from .forms import *
 from django.contrib import messages
 
@@ -21,6 +22,29 @@ def product_list(request):
                 'request': request
             }
             return render(request, 'crud/product-list.html', context)
+        else:
+            messages.error(request, "No tienes permisos para ver esta página.")
+            request.session['level_mensaje'] = 'alert-danger'
+            return redirect(reverse('login'))
+    else:
+        messages.error(request, "Debes iniciar sesión para acceder a esta página.")
+        request.session['level_mensaje'] = 'alert-danger'
+        return redirect(reverse('login'))
+
+def order_list(request):
+    if 'usuario' in request.session:
+        usuario = request.session['usuario']
+        if usuario.get('rol') == 'ADMIN':
+            CATEGORY_DICT = dict(Product.CATEGORY_CHOICES)
+            solicitudes = SolicitudProducto.objects.all()
+
+            
+            context = {
+                'solicitudes': solicitudes,
+                'category_dict': CATEGORY_DICT,
+                'request': request
+            }
+            return render(request, 'crud/order-list.html', context)
         else:
             messages.error(request, "No tienes permisos para ver esta página.")
             request.session['level_mensaje'] = 'alert-danger'
@@ -92,6 +116,7 @@ def add_product(request):
                     if form.is_valid():
                         product = form.cleaned_data.get('product')
                         description = form.cleaned_data.get('description')
+                        price = form.cleaned_data.get('price')
                         image = form.cleaned_data.get('image')
                         category = form.cleaned_data.get('category')
                         flavor = form.cleaned_data.get('flavor')
@@ -100,6 +125,7 @@ def add_product(request):
                         obj = Product.objects.create(
                             product=product,
                             description=description,
+                            price=price,
                             image=image,
                             category=category,
                         )

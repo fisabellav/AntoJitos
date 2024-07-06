@@ -2,13 +2,13 @@ from django.shortcuts import render, redirect, HttpResponse, reverse
 from django.contrib import messages
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
+from django.conf import settings
 from .models import *
 from .forms import UserForm
 import bcrypt
 import json
 from django.http import JsonResponse
 import requests
-import bcrypt
 
 
 def signup(request):
@@ -20,14 +20,21 @@ def signup(request):
         return render(request, 'login/signup.html', context)
     
     if request.method == 'POST':
-        errors = User.objects.validador_campos(request.POST)
+        prefijo_telefono = request.POST.get('prefijo_telefono', '')
+        phone_number = request.POST.get('phone_number', '')
+        phone_number = ''.join(phone_number.split())
+        phone_number = prefijo_telefono + phone_number
+
+        postData = request.POST.copy()
+        postData['phone_number'] = phone_number
+        errors = User.objects.validador_campos(postData)
 
         if errors:
             for key, value in errors.items():
                 messages.error(request, value)
             
             # Preserve form data in session
-            request.session['registro_nombre'] = request.POST.get('first_name', '')
+            request.session['registro_nombre'] = request.POST.get('name', '')
             request.session['registro_apellido'] = request.POST.get('last_name', '')
             request.session['registro_email'] = request.POST.get('email', '')
             request.session['registro_phone'] = request.POST.get('phone_number', '')
@@ -38,7 +45,7 @@ def signup(request):
             
             # Pass session data as context variables
             context = {
-                'first_name': request.session['registro_nombre'],
+                'name': request.session['registro_nombre'],
                 'last_name': request.session['registro_apellido'],
                 'email': request.session['registro_email'],
                 'phone_number': request.session['registro_phone'],
@@ -58,10 +65,9 @@ def signup(request):
             request.session['registro_birthday'] = ""
             request.session['registro_genero'] = ""
             
-            first_name = request.POST['first_name']
+            name = request.POST['name']
             last_name = request.POST['last_name']
             email = request.POST['email']
-            phone_number = request.POST['phone_number']
             password = request.POST['password']
             comuna_id = request.POST['comuna']  # Assuming 'comuna' is passed as the ID of Comuna object
             birthday = request.POST['birthday']
@@ -88,23 +94,24 @@ def signup(request):
                     verification_url = request.build_absolute_uri(verification_link)
                     
                     send_mail(
-                        'Completa tu registro en nuestro sitio',
-                        f'Para completar tu registro, haz clic en el siguiente enlace: {verification_url}',
-                        'noreply@tudominio.com',
-                        [existing_user.email],
-                        fail_silently=False,
+                            'Completa tu registro en nuestro sitio',
+                            f'Para completar tu registro, haz clic en el siguiente enlace: {verification_url}',
+                            settings.DEFAULT_FROM_EMAIL,
+                            [existing_user.email],
+                            fail_silently=False,
                     )
-                    
+                    request.session['level_mensaje'] = 'alert-warning'
                     messages.warning(request, "El correo o teléfono ya están registrados. Se ha enviado un correo para completar tu registro.")
                     return redirect(reverse('login'))
                 else:
+                    request.session['level_mensaje'] = 'alert-warning'
                     messages.warning(request, "El correo o teléfono ya están registrados. Ingrese con su contraseña.")
             else:
                 # Create a new user if not exists
                 comuna = Comuna.objects.get(pk=comuna_id)
                 password_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
                 User.objects.create(
-                    name=first_name,
+                    name=name,
                     last_name=last_name,
                     email=email,
                     birthday=birthday,
@@ -141,11 +148,12 @@ def complete_registration(request, token):
             user.password = password_hash
             user.verification_token = None  # Clear verification token after setting password
             user.save()
-            
+            request.session['level_mensaje'] = 'alert-success'
             messages.success(request, "Contraseña establecida correctamente. Ahora puedes iniciar sesión.")
             return redirect(reverse('login'))
     
     except User.DoesNotExist:
+        request.session['level_mensaje'] = 'alert-danger'
         messages.error(request, "El enlace de verificación no es válido.")
         return redirect(reverse('login'))
 
@@ -164,16 +172,28 @@ def login(request):
                 usuario_registrado = user[0]
                 
                 if bcrypt.checkpw(request.POST['password_login'].encode(), usuario_registrado.password.encode()): 
+
+                    # Obtener el ID de la comuna
+                    comuna_display = usuario_registrado.comuna.comuna if usuario_registrado.comuna else None
+                    # Formatear la fecha de nacimiento
+                    birthday_formatted = usuario_registrado.birthday.strftime('%Y-%m-%d') if usuario_registrado.birthday else None
+                    gender_display = usuario_registrado.get_gender_display()
+
                     usuario = {
                         'id':usuario_registrado.id,
-                        'first_name':usuario_registrado.name,
+                        'name':usuario_registrado.name,
                         'last_name':usuario_registrado.last_name,
                         'email':usuario_registrado.email,
                         'rol':usuario_registrado.rol,
+                        'phone_number':usuario_registrado.phone_number,
+                        'comuna': comuna_display,
+                        'birthday': birthday_formatted,
+                        'gender': gender_display,
+
                     }
 
                     request.session['usuario'] = usuario
-                    
+                    print(usuario)
 
                     if usuario_registrado.rol == 'ADMIN' :
                         messages.success(request,"Ingreso exitoso")

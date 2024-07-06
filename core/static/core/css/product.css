@@ -121,3 +121,15 @@ margin-left: 0;
 .product-detail .product-info{
     margin: 90px 0;
 }
+
+.datos-personales, .other-person {
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.datos-personales.active, .other-person.active {
+    max-height: 500px; /* Ajusta esto según el contenido real */
+    opacity: 1;
+}

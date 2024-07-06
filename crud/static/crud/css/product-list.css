@@ -3,6 +3,12 @@
     height: 100px;
 }
 
+.myimg-order{
+    width: 50px;
+    height: 50px;
+
+}
+
 a{
     color: black;
 }
@@ -20,8 +26,23 @@ a:hover{
     
 }
 
+.myActions{
+    width: 80%;
+}
 
+.myTable{
+    width: 90%;
 
+}
+
+.tbActions{
+    width: 20%;
+
+}
+
+.order-panel{
+    margin: 0 0 0 15px;
+}
 
 .add-product:hover{
     background-color: #7F6799;
@@ -30,3 +51,67 @@ a:hover{
     scale: 1.02;
 }
 
+
+.filter-title {
+    margin: 0;
+    font-size: 30px;
+    font-weight: bold;
+    color: #29232F;
+}
+
+.filter-group {
+    margin-top: 15px;
+    height: 100%;
+}
+
+.filter-group-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #342D3C;
+}
+
+.filter-group-toggle {
+    float: right;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.filter-options {
+    list-style: none;
+    padding: 0 15px;
+    margin: 0;
+    display: none;
+}
+
+.filter-options li {
+    margin-top: 8px;
+}
+
+.filter-options label {
+    display: inline-block;
+}
+
+.filter-options input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+button.product-btn {
+    
+    color: white;
+    background-color: #856da0;
+    padding: 0.8rem 1rem;
+    border-radius: 1rem;
+    border-style: none;
+}
+
+.product .button-container i {
+    font-size: 15px;
+}
+
+.product a:hover,
+.button-container i:hover, button.product-btn:hover {
+    transform: scale(1.1);
+}

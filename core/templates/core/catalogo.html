@@ -60,6 +60,7 @@
                             <h3 class="filter-group-title">Categoría</h3>
                             <div class="row">
                                 <div class="col-12">
+                                    {% if filtro_categoria %}
                                     <select id="category-filter" name="categories" class="form-select myselect mt-2"
                                         multiple>
                                         {% for f in filtro_categoria %}
@@ -67,6 +68,9 @@
                                         </option>
                                         {% endfor %}
                                     </select>
+                                    {% else %}
+                                    <p class="my-2">No hay filtros disponibles</p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -75,11 +79,15 @@
                         <!-- Sabor -->
                         <div class="filter-group">
                             <h3 class="filter-group-title">Sabor</h3>
+                            {% if filtro_sabor %}
                             <select id="flavor-filter" name="flavors" class="form-select myselect mt-2" multiple>
                                 {% for f in filtro_sabor %}
                                 <option value="{{ f }}" {% if f in selected_flavors %}selected{% endif %}>{{ f }}</option>
                                 {% endfor %}
                             </select>
+                            {% else %}
+                            <p class="my-2">No hay filtros disponibles</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -90,9 +98,10 @@
 
             <!-- Añadir botón para aplicar filtros -->
             <div class="apply-filters">
-                <button id="apply-filters-btn" class="product-btn ms-3 mt-2">Aplicar Filtros</button>
+                <button id="apply-filters-btn" class="product-btn ms-3 mx-2 mt-1 mb-2">Aplicar Filtros</button>
             </div>
         </div>
+
         <div class="col-9 p-0">
             <!-- PRODUCTOS -->
             <div id="myproducts" class="container-fluid p-4">

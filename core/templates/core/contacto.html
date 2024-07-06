@@ -41,7 +41,7 @@
             <h3>Contáctanos</h3>
             <div class="row mt-3">
                 <div class="col-6">
-                    <label for="idNombre" class="form-label">Nombre</label>
+                    <label for="name" class="form-label">Nombre</label>
                     {{user_form.name}}
                     <small id="error_nombre_min" class="text-danger">Debes ingresar tu nombre</small>
                     <small id="error_nombre_max" class="text-danger">El nombre excede el largo máximo permitido</small>
@@ -86,18 +86,14 @@
                     {{user_form.comuna}}
                     <small id="error_comuna" class="text-danger">Debes ingresar una comuna</small>
                 </div>
-                <div class="col-lg-4 col-md-12 mt-3">
-                    <label for="product-select" class="form-label">Producto</label>
-                    <select class='form-select' disabled id="product-select">
-                        <option value="{{ producto.id }}" selected> {{ producto.product }} </option>
-    
-                    </select>
+                <div class="row mx-auto">
+                    <div class="col-12 product-table ">
+                        <h4 class="pt-3 pb-3 ps-3 table-titulo">Productos en la lista de deseos</h4>
+                        <div id="wishlist-products" class="listCart">
+                            <!-- Aquí se mostrarán los productos de la lista de deseos -->
+                        </div>
+                    </div>
                 </div>
-                <div class="col-lg-2 col-md-12 mt-3">
-                    <label for="cantidad-seleccionada" class="form-label">Cantidad</label>
-                    {{ solicitud_form.quantity }}
-                </div>
-                
             </div>
             <h3 class="mt-4">Crea tu cuenta</h3>
             <div class="row">
@@ -110,11 +106,13 @@
                         <li>Al menos una minúscula y al menos una mayúscula</li>
                         <li>NO puede tener otros símbolos.</li>
                     </ul>
+                    <small id="error_password" class="text-danger">No cumple el formato requerido</small>
                 </div>
                 
                 <div class="col-lg-6 mt-3">
                     <label for="password_confirm" class="form-label">Repetir contraseña</label>
-                    <input class="form-control" type="password" name="password_confirm" id="password_confirm" required>
+                    <input class="form-control" type="password" name="password_confirm" id="password_confirm">
+                    <small id="error_confirm_password" class="text-danger">Las contraseñas no coinciden</small>
                 </div>
             </div>
             <input type="hidden" name="wishlist" id="wishlist">

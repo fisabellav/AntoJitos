@@ -25,27 +25,56 @@
 </div>
 
 <div class="container-fluid">
+    <div class="row m-0">
+        <div id="myFilters" class="col-lg-3">
+            <!-- FILTROS -->
+            <div id="filters" class="p-4">
+                <h3 class="filter-title">Filtros</h3>
 
-    <!-- PRODUCTOS -->
-    <section id="myproducts" class="container-fluid">
-        <div class="all-products">
-            {% for p in productos %}
-            <div class="product" data-id="{{ p.id }}">
-                {% if p.image %}
-                <img src="{{ p.image.url }}">
-                {% endif %}
-                <div class="product-info">
-                    <h4 class="product-title">{{ p.product }}</h4>
+                <!-- Sabor -->
+                <div class="filter-group">
+                    <h3 class="filter-group-title">Sabor</h3>
+                    {% if filtro_sabor %}
+                    <select id="flavor-filter" name="flavors" class="form-select myselect mt-2" multiple>
+                        {% for f in filtro_sabor %}
+                        <option value="{{ f }}" {% if f in selected_flavors %}selected{% endif %}>{{ f }}</option>
+                        {% endfor %}
+                    </select>
+                    {% else %}
+                    <p class="my-2">No hay filtros disponibles</p>
+                    {% endif %}
                 </div>
-                <div class="button-container">
-                    <a class="product-btn" href="{% url 'producto' id=p.id %}">Ver Detalles</a>
-                    <i class="deseos fa-regular fa-heart"></i>
+
+                <!-- Añadir botón para aplicar filtros -->
+                <div class="apply-filters mt-3">
+                    <button id="apply-filters-btn" class="product-btn mt-2">Aplicar Filtros</button>
                 </div>
             </div>
-            {% endfor %}
-                
         </div>
-    </section>
+
+        <div class="col-9 p-0">
+            <!-- PRODUCTOS -->
+            <section id="myproducts" class="container-fluid">
+                <div class="all-products">
+                    {% for p in productos %}
+                    <div class="product" data-id="{{ p.id }}">
+                        {% if p.image %}
+                        <img src="{{ p.image.url }}">
+                        {% endif %}
+                        <div class="product-info">
+                            <h4 class="product-title">{{ p.product }}</h4>
+                        </div>
+                        <div class="button-container">
+                            <a class="product-btn" href="{% url 'producto' id=p.id %}">Ver Detalles</a>
+                            <i class="deseos fa-regular fa-heart"></i>
+                        </div>
+                    </div>
+                    {% endfor %}
+                        
+                </div>
+            </section>
+        </div>           
+    
 
 </div>
 

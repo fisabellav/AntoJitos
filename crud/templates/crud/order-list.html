@@ -1,0 +1,145 @@
+{% extends 'crud/base.html' %}
+{% load custom_filters %}
+{% block title %}Pedidos{% endblock %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'crud/css/product-list.css' %}">
+{% endblock %}
+
+{% block first_content %}
+
+<div class="mycontainer">
+    {% if messages %}
+    <div class="alert {{ request.session.level_mensaje }} alert-dismissible" role="alert">
+        <ul>
+            {% for message in messages %}
+            <li><strong>{{message}}</strong></li>
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </ul>
+    </div>
+
+    {% endif %}
+    <div class="container-fluid order-panel px-auto">
+        <div class="row m-0">
+            <div id="myFilters" class="col">
+                <!-- FILTROS -->
+                <div id="filters" class="p-4">
+                    <h3 class="filter-title">Filtros</h3>
+
+                    <!-- Sabor -->
+                    <div class="filter-group">
+                        <h3 class="filter-group-title">Categoría</h3>
+                        {% if filtro_sabor %}
+                        <select id="flavor-filter" name="flavors" class="form-select myselect mt-2" multiple>
+                            {% for f in filtro_sabor %}
+                            <option value="{{ f }}" {% if f in selected_flavors %}selected{% endif %}>{{ f }}</option>
+                            {% endfor %}
+                        </select>
+                        {% else %}
+                        <p class="my-2">No hay filtros disponibles</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Añadir botón para aplicar filtros -->
+                    <div class="apply-filters mt-3">
+                        <button id="apply-filters-btn" class="product-btn mt-2">Aplicar Filtros</button>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="col-lg-9 p-0">
+                <div class="mycontainer container mx-auto">
+
+
+
+                    <div class="table-responsive">
+                        <table class="table myTable table-hover">
+                            <thead class="table-head">
+                                <tr>
+                                    <th>ID Pedido</th>
+                                    <th>Nombre Cliente</th>
+                                    <th>Producto</th>
+                                    <th>Imagen</th>
+                                    <th>Cantidad</th>
+                                    <th>Total</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-body">
+                                {% for s in solicitudes %}
+                                <tr>
+                                    <td>
+                                        <h6><a class="card-link text-decoration-none" href="">{{s.id}}</a></h6>
+                                    </td>
+                                    <td>
+                                        <h6><a class="card-link text-decoration-none" href="">{{ s.name }} {{ s.last_name }}</a></h6>
+                                    </td>
+                                    <td>
+                                        <h6>
+                                            <a class="card-link text-decoration-none" href=""> {{ s.product }}</a>
+
+                                        </h6>
+                                    </td>
+                                    <td>
+                                        {% if s.product.image %}
+                                        <img class="img-fluid myimg-order" src="{{s.product.image.url}}" alt="">
+                                        {% else %}
+                                        <img class="img-fluid myimg-orde" src="{% static 'crud/img/image_not_found.jpg' %}" alt="">
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <h6>
+                                            <a class="card-link text-decoration-none" href=""> {{ s.quantity }}</a>
+
+                                        </h6>
+                                    </td>
+                                    <td>
+                                        <a class="card-link text-decoration-none" href=""> {{ s.quantity }}</a>
+                                    </td>
+                                    <td class="tbActions">
+                                        <div class="myActions container">
+                                            <div class="row row-cols-3  text-center pt-2">
+                                                <div class="col-4">
+                                                    <a class="btn btn-outline-none" href="">
+                                                        <span class="fs-5 btn-view">
+                                                            <i class="fa-solid fa-eye"></i>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                                <div class="col-4">
+                                                    <a class="btn btn-outline-none" href="">
+                                                        <span class="fs-5 btn-edit">
+                                                            <i class="fa-solid fa-pen"></i>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                                <div class="col-4">
+                                                    <a class="btn btn-outline-none modal-borrar" data-bs-toggle="modal"
+                                                        data-bs-target="#staticBackdrop" data-href="">
+                                                        <span class="fs-5 btn-delete">
+                                                            <i class="fa-solid fa-trash-can"></i>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            {% endblock %}
+
+            {% block my_js %}
+            <script src="{% static 'crud/js/funciones.js' %}"></script>
+            {% endblock %}

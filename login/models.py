@@ -8,30 +8,37 @@ class UserManager(models.Manager):
         EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
         JUST_LETTERS = re.compile(r'^[a-zA-Z.]+$')
         PASSWORD_REGEX = re.compile(r'^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8,16}$')
-
-        errors = {}
-
+        PHONE_REGEX = re.compile(r'^(\+\d{1,3}\d{9,15}|\+56\d{9})$')
         
-        if len(postData['first_name'].strip()) < 2 or len(postData['first_name'].strip()) > 30:
-            errors['first_name_len'] = "Nombre debe tener entre 2 y 30 caracteres"
+        errors = {}
+        
+        
+        if len(postData['name'].strip()) < 2 or len(postData['name'].strip()) > 30:
+            errors['name_len'] = "Nombre debe tener entre 2 y 30 caracteres"
 
         if len(postData['last_name'].strip()) < 2 or len(postData['last_name'].strip()) > 30:
             errors['last_name_len'] = "Apellido debe tener entre 2 y 30 caracteres"
         
-        if not JUST_LETTERS.match(postData['first_name']) or not JUST_LETTERS.match(postData['last_name']):
+        if not JUST_LETTERS.match(postData['name']) or not JUST_LETTERS.match(postData['last_name']):
             errors['just_letters'] = "Solo se permite el ingreso de letras en el nombre y apellido"
-            
-        if not EMAIL_REGEX.match(postData['email']):
-            errors['email'] = "Formato correo no válido"
-        
-        if not PASSWORD_REGEX.match(postData['password']):
-            errors['password_format'] = "Formato contraseña no válido"
 
-        #if len(postData['password']) < 8 or len(postData['password']) > 15:
-        #    errors['password_len'] = "La cantidad de caracteres debe ser entre 8 y 15" 
+        if not PHONE_REGEX.match(postData['phone_number']):
+            errors['phone_number'] = "Número de teléfono inválido." 
 
-        if postData['password'] != postData['password_confirm']:
-            errors['password_confirm'] = "Contraseñas no coinciden"
+        email = postData.get('email', None)
+        if email:
+            if not EMAIL_REGEX.match(postData['email']):
+                errors['email'] = "Formato correo no válido"
+
+        # Validación de contraseña (solo si está presente)
+        password = postData.get('password', None)
+        if password:
+            if not PASSWORD_REGEX.match(password):
+                errors['password_format'] = "Formato contraseña no válido"
+            if postData['password'] != postData['password_confirm']:
+                errors['password_confirm'] = "Contraseñas no coinciden"
+            if len(postData['password']) < 8 or len(postData['password']) > 15:
+                errors['password_len'] = "La cantidad de caracteres debe ser entre 8 y 15"
 
         return errors
 

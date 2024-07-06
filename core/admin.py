@@ -1,18 +1,19 @@
 from django.contrib import admin
-from .models import SolicitudProducto
+from .models import Order
+from .models import OrderDetail
 
 
 
 
 
-class SolicitudProductoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'get_user_name', 'product', 'quantity')
-    # ordering = ('get_user_name',)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id',)
+    
+
+class OrderDetailAdmin(admin.ModelAdmin):
+    list_display = ('id', 'quantity')
 
 
-    def get_user_name(self, obj):
-        return f"{obj.user.name} {obj.user.last_name}"
 
-    get_user_name.short_description = 'Nombre Solicitante'  # Nombre de la columna en el admin
-
-admin.site.register(SolicitudProducto,SolicitudProductoAdmin)
+admin.site.register(Order,OrderAdmin)
+admin.site.register(OrderDetail,OrderDetailAdmin)

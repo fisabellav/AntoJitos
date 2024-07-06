@@ -3,8 +3,13 @@ from django.shortcuts import render, HttpResponse, redirect, reverse
 from crud.models import *
 from login.models import *
 from .models import *
+from django.contrib import messages
 from login.forms import UserForm
-from .forms import SolicitudProductoForm
+from .forms import OrderDetailForm, OrderForm
+from django.utils.crypto import get_random_string
+from django.core.mail import send_mail
+from django.conf import settings
+import bcrypt
 
 
 # Create your views here.
@@ -84,72 +89,163 @@ def filter_products(request):
 
 
 def producto(request, id):
+
     try:
-        product = Product.objects.get(id=id)
-        if product:
-            if request.method == 'POST':
-                user_form = UserForm(request.POST, prefix='user')
-                solicitud_form = SolicitudProductoForm(request.POST, prefix='solicitud')
-                if user_form.is_valid() :
+        producto = Product.objects.get(id=id)
+
+        if request.method == 'POST':
+            user_form = UserForm(request.POST, prefix='')
+            orderdetail_form = OrderDetailForm(request.POST, prefix='order-detail')
+            order_form = OrderForm(request.POST, prefix='order')
+
+            # Obtener datos del formulario POST
+            name = request.POST.get('name')
+            last_name = request.POST.get('last_name')
+            birthday = request.POST.get('birthday')
+            comuna = request.POST.get('comuna')
+            gender = request.POST.get('gender')
+            phone_number = request.POST.get('formatted_phone_number')
+            email = request.POST.get('email')
+            password = request.POST.get('password', '')
+
+            # Comprueba si ya existe un usuario con el correo electrónico o el número de teléfono
+            existing_user_email = User.objects.filter(email=email).first()
+            existing_user_phone = User.objects.filter(phone_number=phone_number).first()
+            
+            if existing_user_email or existing_user_phone:
+                existing_user = existing_user_email if existing_user_email else existing_user_phone
+
+                if password:
+                    if existing_user and not existing_user.password:
+                        # Generate a unique token for verification
+                        verification_token = get_random_string(length=32)
+                        
+                        # Save the token with the user record
+                        existing_user.verification_token = verification_token
+                        existing_user.save()
+                        
+                        # Send an email with a link for completing registration
+                        verification_link = reverse('complete-registration', kwargs={'token': verification_token})
+                        verification_url = request.build_absolute_uri(verification_link)
+                        
+                        send_mail(
+                            'Completa tu registro en nuestro sitio',
+                            f'Para completar tu registro, haz clic en el siguiente enlace: {verification_url}',
+                            'noreply@tudominio.com',
+                            [existing_user.email],
+                            fail_silently=False,
+                        )
+                        request.session['level_mensaje'] = 'alert-warning'
+                        messages.warning(request, "El correo o teléfono ya están registrados. Se ha enviado un correo para completar tu registro.")
+                        return redirect(reverse('login'))
+                else:   
+                
+                    context = {
+                        'user_form': user_form,
+                        'orderdetail_form': orderdetail_form,
+                        'order_form': order_form,
+                        'producto': producto
+                    }
+                    request.session['level_mensaje'] = 'alert-warning'
+                    messages.warning(request, "El correo o teléfono ya están asociados a una cuenta. Inicie sesión, ingrese una contraseña para registrarse o corrija sus datos.")
+                    return render(request, 'core/producto.html', context)
+            else:
+
+                if user_form.is_valid():
+
                     name = user_form.cleaned_data.get('name')
                     last_name = user_form.cleaned_data.get('last_name')
                     birthday = user_form.cleaned_data.get('birthday')
-                    prefijo_telefono = request.POST.get('prefijo_telefono')
-                    phone_number = user_form.cleaned_data.get('phone_number')
-                    phone_number = ''.join(phone_number.split())  # Quitamos los espacios en blanco
-                    phone_number = prefijo_telefono + phone_number
-                    gender = user_form.cleaned_data.get('gender')
                     comuna = user_form.cleaned_data.get('comuna')
+                    gender = user_form.cleaned_data.get('gender')
+                    phone_number = user_form.cleaned_data.get('formatted_phone_number')
+
                     email = user_form.cleaned_data.get('email')
-                    password = user_form.cleaned_data.get('password')
+                    password = user_form.cleaned_data.get('password', '')
 
-                    user = User.objects.create(
-                        name=name,
-                        last_name=last_name,
-                        birthday=birthday,
-                        phone_number=phone_number,
-                        comuna=comuna,
-                        gender=gender,
-                        email=email,
-                        password=password,
-                    )
-                    user.save()
+                    postData = request.POST.copy()
+                    postData['phone_number'] = phone_number
+                    errors = User.objects.validador_campos(postData)
+
+                    if errors:
+                        for key, value in errors.items():
+                            messages.error(request, value)
+                        # Preserve form data in session
+                        request.session['registro_nombre'] = request.POST.get('name', '')
+                        request.session['registro_apellido'] = request.POST.get('last_name', '')
+                        request.session['registro_email'] = request.POST.get('email', '')
+                        request.session['registro_phone'] = request.POST.get('phone_number', '')
+                        request.session['registro_comuna'] = request.POST.get('comuna', '')
+                        request.session['registro_genero'] = request.POST.get('gender', '')
+                        request.session['registro_birthday'] = request.POST.get('birthday', '')
+                        request.session['level_mensaje'] = 'alert-danger'
+                        
+                        # Pass session data as context variables
+                        context = {
+                            'name': request.session['registro_nombre'],
+                            'last_name': request.session['registro_apellido'],
+                            'email': request.session['registro_email'],
+                            'phone_number': request.session['registro_phone'],
+                            'comuna': request.session['registro_comuna'],
+                            'birthday': request.session['registro_birthday'],
+                            'gender': request.session['registro_genero'],
+                            'user_form': user_form,
+                            'orderdetail_form': orderdetail_form,
+                            'order_form': order_form,
+                            'producto': producto  
+                        }
+                        return render(request, 'core/producto.html', context)
                     
-                    if solicitud_form.is_valid():
+                    else:
+                        # Clear session data
+                        request.session['registro_nombre'] = ""
+                        request.session['registro_apellido'] = ""
+                        request.session['registro_email'] = ""
+                        request.session['registro_phone'] = ""
+                        request.session['registro_comuna'] = ""
+                        request.session['registro_birthday'] = ""
+                        request.session['registro_genero'] = ""
+                        if password:
+                                password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()   
 
-                        # Datos de la solicitud
-                        quantity = solicitud_form.cleaned_data.get('quantity')
-                        print(f"Quantity: {quantity}")  # Depuración
-                        # Crear solicitud
-                        solicitud = SolicitudProducto.objects.create(
-                            user=user,
-                            product=product,
-                            quantity=quantity
+                        user = User.objects.create(
+                            name=name,
+                            last_name=last_name,
+                            birthday=birthday,
+                            phone_number=phone_number,
+                            comuna=comuna,
+                            gender=gender,
+                            email=email,
+                            password=password,
                         )
-                        solicitud.save()
-                    return redirect(reverse('catalogo') + '?OK')
+                        user.save()
 
-                else:
-                    context = {
-                        'producto': product,
-                        'user_form': user_form,
-                        'solicitud_form': solicitud_form
-                    }
-                    return render(request, 'core/producto.html', context)
-            else:
-                user_form = UserForm(prefix='user')
-                solicitud_form = SolicitudProductoForm(prefix='solicitud')
-                
+                        send_mail(
+                            'Pedido por confirmar',
+                            f'Para completar tu registro, haz clic en el siguiente enlace:',
+                            settings.DEFAULT_FROM_EMAIL,
+                            [email],
+                            fail_silently=False,
+                        )
+
+                        request.session['level_mensaje'] = 'alert-success'
+                        messages.success(request, 'Pedido enviado. En breve le llegará el correo de confirmación')
+                        return redirect(reverse('catalogo') + '?OK')
+            
+        if request.method == 'GET':
+            user_form = UserForm(prefix='')
+            orderdetail_form = OrderDetailForm(prefix='order-detail')
+            order_form = OrderForm(prefix='order')
             context = {
-                'producto': product,
                 'user_form': user_form,
-                'solicitud_form': solicitud_form
+                'orderdetail_form': orderdetail_form,
+                'order_form': order_form,
+                'producto': producto
             }
             return render(request, 'core/producto.html', context)
-        else:
-            return redirect(reverse('catalogo') + '?NO_EXIST')
     except Product.DoesNotExist:
         return redirect(reverse('catalogo') + '?NO_EXIST')
+
 
 def contacto(request):
     try:

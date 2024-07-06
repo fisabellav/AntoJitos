@@ -34,11 +34,15 @@
                 <!-- Sabor -->
                 <div class="filter-group">
                     <h3 class="filter-group-title">Sabor</h3>
+                    {% if filtro_sabor %}
                     <select id="flavor-filter" name="flavors" class="form-select myselect mt-2" multiple>
                         {% for f in filtro_sabor %}
                         <option value="{{ f }}" {% if f in selected_flavors %}selected{% endif %}>{{ f }}</option>
                         {% endfor %}
                     </select>
+                    {% else %}
+                    <p class="my-2">No hay filtros disponibles</p>
+                    {% endif %}
                 </div>
 
                 <!-- Añadir botón para aplicar filtros -->

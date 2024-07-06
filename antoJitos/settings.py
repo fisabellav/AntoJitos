@@ -13,6 +13,15 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from django.contrib.messages import constants as messages
 
+
+# Configuración de AnyMail para usar Mailgun
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
+ANYMAIL = {
+    "MAILGUN_API_KEY": "6b19477c4dd587d40ba6fa54e44d0454-623e10c8-5a2ebac1",  # Reemplaza con tu API key de Mailgun
+    "MAILGUN_SENDER_DOMAIN": "sandbox4be8aa9391c94fecb8e3a1e6d6677623.mailgun.org",  # Reemplaza con tu dominio de sender de Mailgun
+}
+DEFAULT_FROM_EMAIL = "noreply@antojitos.com"  # Reemplaza con tu dirección de email por defecto
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -144,5 +153,3 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Configuración del backend de correo electrónico
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

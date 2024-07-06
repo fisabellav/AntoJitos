@@ -21,8 +21,11 @@
 {% endblock %}
 
 {% block first_content %}
+
+
+
 <div class="product-detail">
-    <div class="product container-fluid " data-id="{{ p.id }}">
+    <div class="product container-fluid " data-id="{{ producto.id }}">
         <div class="row mx-auto justify-content-center px-0">
             <div class="col-7">
                 {% if producto.image %}
@@ -39,8 +42,8 @@
                                 <img class="img-fluid thumbnail-image  mb-0" src="{{producto.image.url}}">
                             </div>
                         </div>
-                        
-                    
+
+
                     </div>
                     <img class=" col img-fluid product-image " src="{{producto.image.url}}">
                 </div>
@@ -61,7 +64,7 @@
                             <i class="fa-solid fa-heart deseos"></i>
                         </div>
                     </div>
-        
+
                     <div class="product-actions">
                         <a href="#formulario" class="comprar">Contáctanos</a>
                     </div>
@@ -72,95 +75,105 @@
 </div>
 
 <!-- producto.html -->
-{% if error_message %}
-<div class="container">
-    {{ error_message }}
+{% if messages %}
+<div class="alert {{ request.session.level_mensaje }} alert-dismissible" role="alert">
+    <ul>
+        {% for message in messages %}
+        <li><strong>{{message}}</strong></li>
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </ul>
 </div>
 {% endif %}
 
 <div class="formulario mx-auto">
-    <form id="formulario" class="row g-2 p-5 custom-validation" action="" method="post" enctype="multipart/form-data">
+    <form id="formulario" class="row g-2 p-5 custom-validation" action="" method="post"
+        enctype="multipart/form-data">
         {% csrf_token %}
         <h3>Contáctanos</h3>
-        <div class="row">
-            <div class="col-lg-6 mt-3">
-                <label for="idNombre" class="form-label">Nombre</label>
-                {{user_form.name}}
-                <small id="error_nombre_min" class="text-danger">Debes ingresar tu nombre</small>
-                <small id="error_nombre_max" class="text-danger">El nombre excede el largo máximo permitido</small>
-            </div>
-            <div class="col-lg-6 mt-3">
-                <label for="idApellido" class="form-label">Apellidos</label>
-                {{user_form.last_name}}
-                <small id="error_apellido_min" class="text-danger">Debes ingresar tu apellido</small>
-                <small id="error_apellido_max" class="text-danger">El apellido excede el largo máximo permitido</small>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6 mt-3">
-                <label for="idFono" class="form-label">Teléfono</label>
-                <div class="">
-                    <input type="hidden" id="prefijo-hidden" name="prefijo_telefono" value="+" />
-                    <!-- Campo oculto para almacenar el prefijo -->
-                    {{user_form.phone_number}}
-                    <small id="error_fono" class="text-danger">Debes ingresar un teléfono para contactarte</small>
+        <div class="">
+            <div class="row">
+                <div class="col-lg-6 mt-3">
+                    <label for="name" class="form-label">Nombre</label>
+                    {{ user_form.name }}
+                    <small class="text-danger" id="error_nombre_min">Debes ingresar tu nombre</small>
+                    <small class="text-danger" id="error_nombre_max">El nombre excede el largo máximo permitido</small>
+                </div>
+                <div class="col-lg-6 mt-3">
+                    <label for="idApellido" class="form-label">Apellidos</label>
+                    {{user_form.last_name}}
+                    <small class="text-danger" id="error_apellido_min">Debes ingresar tu apellido</small>
+                    <small class="text-danger" id="error_apellido_max">El apellido excede el largo máximo
+                        permitido</small>
                 </div>
             </div>
-            <div class="col-lg-6 mt-3">
-                <label for="idFecha_nac" class="form-label">Fecha nacimiento</label>
-                <div class="input-group">
-                    {{user_form.birthday}}
+            <div class="row">
+                <div class="col-lg-6 mt-3">
+                    <label for="idFono" class="form-label">Teléfono</label>
+                    <div class="">
+                        <input type="hidden" id="prefijo-hidden" name="prefijo_telefono" />
+                        {{user_form.phone_number}}
+                        {{user_form.formatted_phone_number}} <!-- Campo oculto -->
+                        <small class="text-danger" id="error_fono">Debes ingresar un teléfono para contactarte</small>
+                    </div>
                 </div>
-                <small id="error_nacimiento" class="text-danger">Debes ingresar fecha de nacimiento</small>
-                <small id="error_fecha" class="text-danger">Debes ingresar fecha válida</small>
+                <div class="col-lg-6 mt-3">
+                    <label for="idFecha_nac" class="form-label">Fecha nacimiento</label>
+                    <div class="input-group">
+                        {{user_form.birthday}}
+                    </div>
+                    <small class="text-danger" id="error_nacimiento">Debes ingresar fecha válida</small>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-lg-6 mt-3">
+                    <label for="idCorreo" class="form-label">Email</label>
+                    {{user_form.email}}
+                    <small class="text-danger" id="error_email">Debes ingresar un email válido</small>
+                </div>
+                <div class="col-lg-6 mt-3">
+                    <label for="genero-select" class="form-label">{{ user_form.gender.label }}</label>
+                    {{ user_form.gender }}
+                </div>
+                <div class="col-lg-6 col-md-12 mt-3">
+                    <label for="comuna-select" class="form-label">Comuna</label>
+                    {{user_form.comuna}}
+                    <small class="text-danger" id="error_comuna">Debes ingresar una comuna</small>
+                </div>
+                <div class="col-lg-4 col-md-12 mt-3">
+                    <label for="product-select" class="form-label">Producto</label>
+                    <select class='form-select' disabled id="product-select">
+                        <option value="{{ producto.id }}" selected> {{ producto.product }} </option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-12 mt-3">
+                    <label for="cantidad-seleccionada" class="form-label">Cantidad</label>
+                    {{ orderdetail_form.quantity }}
+                </div>
             </div>
         </div>
-        <div class="row ">
-            <div class="col-lg-6 mt-3">
-                <label for="idEmail" class="form-label">Email</label>
-                {{user_form.email}}
-                <small id="error_email" class="text-danger">Debes ingresar un email válido</small>
-            </div>
-            <div class="col-lg-6 mt-3">
-                <label for="genero-select" class="form-label">{{ user_form.gender.label }}</label>
-                {{ user_form.gender }}
-            </div>
-            <div class="col-lg-6 col-md-12 mt-3">
-                <label for="comuna-select" class="form-label">Comuna</label>
-                {{user_form.comuna}}
-                <small id="error_comuna" class="text-danger">Debes ingresar una comuna</small>
-            </div>
-            <div class="col-lg-4 col-md-12 mt-3">
-                <label for="product-select" class="form-label">Producto</label>
-                <select class='form-select' disabled id="product-select">
-                    <option value="{{ producto.id }}" selected> {{ producto.product }} </option>
 
-                </select>
-            </div>
-            <div class="col-lg-2 col-md-12 mt-3">
-                <label for="cantidad-seleccionada" class="form-label">Cantidad</label>
-                {{ solicitud_form.quantity }}
-            </div>
-            
-        </div>
+        {% if not request.session.usuario %}
         <h3 class="mt-4">Crea tu cuenta</h3>
         <div class="row">
             <div class="col-lg-6 mt-3">
-                <label for="password" class="form-label ">Contraseña</label>
-                {{user_form.password}}
+                <label for="idContraseña" class="form-label">Contraseña</label>
+                {{ user_form.password }}
                 <ul class="fst-italic fs-8 mt-2">
-                    <li>La contraseña debe tener al entre 8 y 16 caracteres</li>
+                    <li>La contraseña debe tener entre 8 y 16 caracteres</li>
                     <li>Al menos un dígito</li>
                     <li>Al menos una minúscula y al menos una mayúscula</li>
                     <li>NO puede tener otros símbolos.</li>
                 </ul>
+                <small class="text-danger" id="error_password">No cumple el formato requerido</small>
             </div>
-            
             <div class="col-lg-6 mt-3">
                 <label for="password_confirm" class="form-label">Repetir contraseña</label>
                 <input class="form-control" type="password" name="password_confirm" id="password_confirm">
+                <small class="text-danger" id="error_confirm_password">Las contraseñas no coinciden</small>
             </div>
         </div>
+        {% endif %}
         <div class="col-12 my-4">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="gridCheck">
@@ -168,13 +181,17 @@
                     No soy un robot
                 </label>
             </div>
-            <small id="error_checkbox" class="text-danger">Debes chequear la casilla</small>
+            <small class="text-danger">Debes chequear la casilla</small>
         </div>
         <div class="col-12">
             <button type="submit" class="btn btn-primary">Enviar</button>
         </div>
+
     </form>
 </div>
+
+
+
 
 {% endblock %}
 

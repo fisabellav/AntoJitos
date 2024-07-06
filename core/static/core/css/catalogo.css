@@ -143,6 +143,7 @@
     background: #c6bed6;
     color: #c6bed6;
     box-sizing: border-box;
+    min-height: 282px;
 }
 
 .container-fluid{

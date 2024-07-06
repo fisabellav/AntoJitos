@@ -22,6 +22,7 @@ class Product(models.Model):
     product = models.CharField(verbose_name='Producto', max_length=50)
     description = models.TextField(verbose_name='Descripción',null=True,blank=True)
     category = models.CharField(verbose_name='Categoría', max_length=2, choices=CATEGORY_CHOICES, default='GA')
+    price = models.PositiveIntegerField(verbose_name='Precio')
     flavor = models.ManyToManyField(Flavor, verbose_name='Sabor', blank=True)
     image = models.ImageField(verbose_name='Imagen',upload_to='productos',null=True,blank=True)
     created_at = models.DateTimeField(verbose_name='Fecha registro',auto_now_add=True)
