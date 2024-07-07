@@ -31,7 +31,7 @@ a:hover{
 }
 
 .myTable{
-    width: 90%;
+    width: 100%;
 
 }
 
@@ -107,6 +107,16 @@ button.product-btn {
     border-style: none;
 }
 
+.detalle-btn{
+    background-color: #856da0;
+    border-color: #856da0;
+    border-radius: 1rem;
+    color: white;
+    padding: 5px 10px;
+    border-style: none;
+
+}
+
 .product .button-container i {
     font-size: 15px;
 }
@@ -114,4 +124,28 @@ button.product-btn {
 .product a:hover,
 .button-container i:hover, button.product-btn:hover {
     transform: scale(1.1);
+}
+
+.btn-circle {
+    display: inline-block;
+    width: 35px; /* Puedes ajustar el tamaño según sea necesario */
+    height: 35px;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 35px; /* Alinea el contenido verticalmente */
+    padding: 0;
+    border: none;
+}
+
+
+
+.btn-circle.btn-confirm{
+    font-size: 20px;
+    background-color: green;
+}
+
+.btn-circle.btn-cancel{
+    font-size: 20px;
+    background-color: red;
 }

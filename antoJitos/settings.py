@@ -17,7 +17,7 @@ from django.contrib.messages import constants as messages
 # Configuración de AnyMail para usar Mailgun
 EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
 ANYMAIL = {
-    "MAILGUN_API_KEY": "6b19477c4dd587d40ba6fa54e44d0454-623e10c8-5a2ebac1",  # Reemplaza con tu API key de Mailgun
+    "MAILGUN_API_KEY": "3fc118a35b02096d6c77e1dc2ba11815-623e10c8-38e00f23",  # Reemplaza con tu API key de Mailgun
     "MAILGUN_SENDER_DOMAIN": "sandbox4be8aa9391c94fecb8e3a1e6d6677623.mailgun.org",  # Reemplaza con tu dominio de sender de Mailgun
 }
 DEFAULT_FROM_EMAIL = "noreply@antojitos.com"  # Reemplaza con tu dirección de email por defecto

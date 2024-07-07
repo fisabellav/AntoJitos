@@ -3,30 +3,24 @@ let listProductHTML = document.querySelector('.product-detail');
 document.addEventListener('DOMContentLoaded', function() {
 
     let cantidadValor = document.getElementById('cantidad-valor');
-    let cantidadSeleccionada = document.querySelectorAll('.cantidad');
+    let cantidadSeleccionada = document.getElementById('idCantidad');
     let menosCantidad = document.getElementById('menos-cantidad');
     let masCantidad = document.getElementById('mas-cantidad');
 
     let cantidad = parseInt(cantidadValor.textContent);
 
-    // Iterar sobre cada elemento con la clase '.cantidad'
-    cantidadSeleccionada.forEach(elemento => {
-        elemento.addEventListener('input', function() {
-            if (parseInt(elemento.value) < 1) {
-                elemento.value = 1;
-            }
-        });
+    cantidadSeleccionada.addEventListener('input', function() {
+        if (parseInt(cantidadSeleccionada.value) < 1) {
+            cantidadSeleccionada.value = 1;
+        }
     });
     
-    
     function actualizarCantidadSeleccionada() {
-        cantidadSeleccionada.forEach(elemento => {
-            elemento.value = cantidad;
-        });
+        cantidadSeleccionada.value = cantidad;
     }
 
     function actualizarCantidadValor() {
-        cantidad = parseInt(cantidadSeleccionada[0].value); // Suponemos que solo tomamos el valor del primer elemento para actualizar el total
+        cantidad = parseInt(cantidadSeleccionada.value);
         cantidadValor.textContent = cantidad;
     }
 
@@ -44,13 +38,13 @@ document.addEventListener('DOMContentLoaded', function() {
         actualizarCantidadSeleccionada();
     });
 
-    // Escuchar cambios en el primer elemento con la clase '.cantidad'
-    cantidadSeleccionada[0].addEventListener('input', () => {
+    cantidadSeleccionada.addEventListener('input', () => {
         actualizarCantidadValor();
     });
 
     actualizarCantidadSeleccionada();
 });
+
 
 
 

@@ -3,6 +3,7 @@ from .models import *
 from core.models import *
 from .forms import *
 from django.contrib import messages
+from django.http import JsonResponse
 
 
 
@@ -35,13 +36,12 @@ def order_list(request):
     if 'usuario' in request.session:
         usuario = request.session['usuario']
         if usuario.get('rol') == 'ADMIN':
-            CATEGORY_DICT = dict(Product.CATEGORY_CHOICES)
-            solicitudes = SolicitudProducto.objects.all()
+            pedidos = Order.objects.all()
 
             
             context = {
-                'solicitudes': solicitudes,
-                'category_dict': CATEGORY_DICT,
+                'pedidos': pedidos,
+                'gender_choices': Order.STATUS_CHOICES,
                 'request': request
             }
             return render(request, 'crud/order-list.html', context)
@@ -53,6 +53,26 @@ def order_list(request):
         messages.error(request, "Debes iniciar sesión para acceder a esta página.")
         request.session['level_mensaje'] = 'alert-danger'
         return redirect(reverse('login'))
+
+def order_detail(request, id):
+    order = get_object_or_404(Order, id=id)
+    detalles = OrderDetail.objects.filter(order=order)
+    return render(request, 'crud/order-detail.html', {'order': order, 'detalles': detalles})
+
+def update_order_status(request, order_id, status):
+    try:
+        # Validar que el estado enviado esté entre las opciones válidas
+        valid_statuses = ['PC', 'CF', 'EP', 'EN', 'CN']
+        if status not in valid_statuses:
+            return JsonResponse({'success': False, 'error': 'Estado no válido.'}, status=400)
+
+        order = Order.objects.get(id=order_id)
+        order.status = status
+        order.save()
+        return JsonResponse({'success': True})
+    except Exception as e:
+        # En caso de error, devolver una respuesta JSON con el mensaje de error
+        return JsonResponse({'success': False, 'error': str(e)})
 
 def filter_by_category(request, category):
     try:

@@ -51,10 +51,9 @@
 
 
             </div>
-            <div class="col-lg-9 p-0">
-                <div class="mycontainer container mx-auto">
-
-
+            <div class="col-lg-10 p-0">
+                <h3 class="filter-title my-4">Pedidos</h3>
+                <div class="py-3 my-4 container-fluid mx-auto">
 
                     <div class="table-responsive">
                         <table class="table myTable table-hover">
@@ -62,71 +61,53 @@
                                 <tr>
                                     <th>ID Pedido</th>
                                     <th>Nombre Cliente</th>
-                                    <th>Producto</th>
-                                    <th>Imagen</th>
-                                    <th>Cantidad</th>
+                                    <th>Estado</th>
                                     <th>Total</th>
                                     <th class="text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody class="table-body">
-                                {% for s in solicitudes %}
+                                {% for s in pedidos %}
                                 <tr>
                                     <td>
                                         <h6><a class="card-link text-decoration-none" href="">{{s.id}}</a></h6>
                                     </td>
                                     <td>
-                                        <h6><a class="card-link text-decoration-none" href="">{{ s.name }} {{ s.last_name }}</a></h6>
+                                        <h6>{{ s.user.name }} {{ s.user.last_name }}</h6>
                                     </td>
                                     <td>
                                         <h6>
-                                            <a class="card-link text-decoration-none" href=""> {{ s.product }}</a>
-
+                                            <a class="card-link text-decoration-none" href="">
+                                                {{ s.get_status_display }}</a>
                                         </h6>
                                     </td>
                                     <td>
-                                        {% if s.product.image %}
-                                        <img class="img-fluid myimg-order" src="{{s.product.image.url}}" alt="">
-                                        {% else %}
-                                        <img class="img-fluid myimg-orde" src="{% static 'crud/img/image_not_found.jpg' %}" alt="">
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <h6>
-                                            <a class="card-link text-decoration-none" href=""> {{ s.quantity }}</a>
-
-                                        </h6>
-                                    </td>
-                                    <td>
-                                        <a class="card-link text-decoration-none" href=""> {{ s.quantity }}</a>
+                                        <p>{{ s.total }}</p>
                                     </td>
                                     <td class="tbActions">
                                         <div class="myActions container">
                                             <div class="row row-cols-3  text-center pt-2">
-                                                <div class="col-4">
-                                                    <a class="btn btn-outline-none" href="">
-                                                        <span class="fs-5 btn-view">
-                                                            <i class="fa-solid fa-eye"></i>
-                                                        </span>
-                                                    </a>
+                                                <div class="col-3 me-4">
+                                                    <a class="btn detalle-btn"
+                                                        href="{% url 'order-detail' id=s.id %}">Detalle</a>
                                                 </div>
-                                                <div class="col-4">
-                                                    <a class="btn btn-outline-none" href="">
-                                                        <span class="fs-5 btn-edit">
-                                                            <i class="fa-solid fa-pen"></i>
+                                                <div class="col-3 ms-3">
+                                                    <button class="btn btn-outline-none btn-circle btn-confirm"
+                                                        data-order-id="{{ s.id }}">
+                                                        <span class="fs-5">
+                                                            <i class="fa-solid fa-check"></i>
                                                         </span>
-                                                    </a>
+                                                    </button>
                                                 </div>
-                                                <div class="col-4">
-                                                    <a class="btn btn-outline-none modal-borrar" data-bs-toggle="modal"
-                                                        data-bs-target="#staticBackdrop" data-href="">
-                                                        <span class="fs-5 btn-delete">
-                                                            <i class="fa-solid fa-trash-can"></i>
+                                                <div class="col-3">
+                                                    <button class="btn btn-outline-none btn-circle btn-cancel"
+                                                        data-order-id="{{ s.id }}">
+                                                        <span class="fs-5">
+                                                            <i class="fa-solid fa-xmark"></i>
                                                         </span>
-                                                    </a>
+                                                    </button>
                                                 </div>
                                             </div>
-                                        
                                         </div>
                                     </td>
                                 </tr>
@@ -137,9 +118,74 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+</div>
 
-            {% endblock %}
 
-            {% block my_js %}
-            <script src="{% static 'crud/js/funciones.js' %}"></script>
-            {% endblock %}
+{% endblock %}
+
+{% block my_js %}
+<script src="{% static 'crud/js/funciones.js' %}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Manejar clic en el botón de confirmación
+        document.querySelectorAll('.btn-confirm').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var orderId = this.getAttribute('data-order-id');
+                updateOrderStatus(orderId, 'CF');
+            });
+        });
+
+        // Manejar clic en el botón de cancelación
+        document.querySelectorAll('.btn-cancel').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var orderId = this.getAttribute('data-order-id');
+                Swal.fire({
+                    title: "¿Estás seguro?",
+                    text: "¡No podrás revertir esto!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Sí, ¡cancélalo!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        updateOrderStatus(orderId, 'CN');
+                    }
+                });
+            });
+        });
+
+        function updateOrderStatus(orderId, status) {
+            // Validar que el estado enviado esté entre las opciones válidas
+            const validStatuses = ['PC', 'CF', 'EP', 'EN', 'CN'];
+            if (!validStatuses.includes(status)) {
+                alert('Estado no válido.');
+                return;
+            }
+
+            fetch(`/order/update-status/${orderId}/${status}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        
+                        
+                    } else {
+                        alert('Error al actualizar el estado del pedido: ' + (data.error || 'Desconocido'));
+                    }
+                })
+                .catch(error => {
+                    alert('Error en la solicitud AJAX: ' + error.message);
+                });
+        }
+    });
+</script>
+{% endblock %}

@@ -151,7 +151,7 @@ def producto(request, id):
                     return render(request, 'core/producto.html', context)
             else:
 
-                if user_form.is_valid():
+                if user_form.is_valid() and  orderdetail_form.is_valid():
 
                     name = user_form.cleaned_data.get('name')
                     last_name = user_form.cleaned_data.get('last_name')
@@ -163,6 +163,8 @@ def producto(request, id):
                     email = user_form.cleaned_data.get('email')
                     password = user_form.cleaned_data.get('password', '')
 
+                    quantity = orderdetail_form.cleaned_data.get('quantity')
+                    print(quantity)
                     postData = request.POST.copy()
                     postData['phone_number'] = phone_number
                     errors = User.objects.validador_campos(postData)
@@ -220,13 +222,31 @@ def producto(request, id):
                         )
                         user.save()
 
-                        send_mail(
-                            'Pedido por confirmar',
-                            f'Para completar tu registro, haz clic en el siguiente enlace:',
-                            settings.DEFAULT_FROM_EMAIL,
-                            [email],
-                            fail_silently=False,
+                    
+                        total = producto.price * quantity
+                        order = Order.objects.create(
+                            user=user,
+                            total=total,
+
                         )
+                        order.save()
+
+                        order_detail = OrderDetail.objects.create(
+                            order=order,
+                            product=producto,
+                            quantity=quantity,
+                            unit_price=producto.price,
+                            subtotal=total,
+                        )
+                        order_detail.save()
+
+                        # send_mail(
+                        #     'Pedido por confirmar',
+                        #     f'Para completar tu registro, haz clic en el siguiente enlace:',
+                        #     settings.DEFAULT_FROM_EMAIL,
+                        #     [email],
+                        #     fail_silently=False,
+                        # )
 
                         request.session['level_mensaje'] = 'alert-success'
                         messages.success(request, 'Pedido enviado. En breve le llegará el correo de confirmación')
@@ -246,58 +266,137 @@ def producto(request, id):
     except Product.DoesNotExist:
         return redirect(reverse('catalogo') + '?NO_EXIST')
 
-
 def contacto(request):
     try:
         if request.method == 'POST':
             user_form = UserForm(request.POST, prefix='user')
-            solicitud_form = SolicitudProductoForm(request.POST, prefix='solicitud')
-            if user_form.is_valid():
-                name = user_form.cleaned_data.get('name')
-                last_name = user_form.cleaned_data.get('last_name')
-                birthday = user_form.cleaned_data.get('birthday')
-                prefijo_telefono = request.POST.get('prefijo_telefono')
-                phone_number = user_form.cleaned_data.get('phone_number')
-                phone_number = ''.join(phone_number.split())  # Quitamos los espacios en blanco
-                phone_number = prefijo_telefono + phone_number
-                gender = user_form.cleaned_data.get('gender')
-                comuna = user_form.cleaned_data.get('comuna')
-                email = user_form.cleaned_data.get('email')
-                password = user_form.cleaned_data.get('password')
+            order_form = OrderForm(request.POST, prefix='order')
+            orderdetail_form = OrderDetailForm(request.POST, prefix='order-detail')
 
-                user = User.objects.create(
-                    name=name,
-                    last_name=last_name,
-                    birthday=birthday,
-                    phone_number=phone_number,
-                    comuna=comuna,
-                    gender=gender,
-                    email=email,
-                    password=password,
-                )
-                user.save()
+            # Obtener datos del formulario POST
+            name = request.POST.get('user-name')
+            last_name = request.POST.get('user-last_name')
+            birthday = request.POST.get('user-birthday')
+            comuna = request.POST.get('user-comuna')
+            gender = request.POST.get('user-gender')
+            phone_number = request.POST.get('user-phone_number')
+            email = request.POST.get('user-email')
+            password = request.POST.get('user-password', '')
 
-                wishlist = request.POST.get('wishlist', '[]')
-                wishlist_products = json.loads(wishlist)
+            # Comprueba si ya existe un usuario con el correo electrónico o el número de teléfono
+            existing_user_email = User.objects.filter(email=email).first()
+            existing_user_phone = User.objects.filter(phone_number=phone_number).first()
 
-                for item in wishlist_products:
-                    product = Product.objects.get(id=item['id'])
-                    SolicitudProducto.objects.create(user=user, product=product, quantity=item['quantity'])
+            if existing_user_email or existing_user_phone:
+                existing_user = existing_user_email if existing_user_email else existing_user_phone
 
-                return redirect(reverse('contacto') + '?OK')
+                if password:
+                    if existing_user and not existing_user.password:
+                        # Genera un token único para la verificación
+                        verification_token = get_random_string(length=32)
+                        
+                        # Guarda el token con el registro del usuario
+                        existing_user.verification_token = verification_token
+                        existing_user.save()
+                        
+                        # Envía un correo electrónico con un enlace para completar el registro
+                        verification_link = reverse('complete-registration', kwargs={'token': verification_token})
+                        verification_url = request.build_absolute_uri(verification_link)
+                        
+                        send_mail(
+                            'Completa tu registro en nuestro sitio',
+                            f'Para completar tu registro, haz clic en el siguiente enlace: {verification_url}',
+                            'noreply@tudominio.com',
+                            [existing_user.email],
+                            fail_silently=False,
+                        )
+                        request.session['level_mensaje'] = 'alert-warning'
+                        messages.warning(request, "El correo o teléfono ya están registrados. Se ha enviado un correo para completar tu registro.")
+                        return redirect(reverse('login'))
+                else:
+                    context = {
+                        'user_form': user_form,
+                        'order_form': order_form,
+                        'orderdetail_form': orderdetail_form,
+                    }
+                    request.session['level_mensaje'] = 'alert-warning'
+                    messages.warning(request, "El correo o teléfono ya están asociados a una cuenta. Inicie sesión, ingrese una contraseña para registrarse o corrija sus datos.")
+                    return render(request, 'core/contacto.html', context)
             else:
-                context = {
-                    'user_form': user_form,
-                    'solicitud_form': solicitud_form
-                }
-                return render(request, 'core/contacto.html', context)
+                if user_form.is_valid():
+                    name = user_form.cleaned_data.get('name')
+                    last_name = user_form.cleaned_data.get('last_name')
+                    birthday = user_form.cleaned_data.get('birthday')
+                    comuna = user_form.cleaned_data.get('comuna')
+                    gender = user_form.cleaned_data.get('gender')
+                    phone_number = user_form.cleaned_data.get('formatted_phone_number')
+
+                    email = user_form.cleaned_data.get('email')
+                    password = user_form.cleaned_data.get('password', '')
+
+                    if password:
+                        password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+                    user = User.objects.create(
+                        name=name,
+                        last_name=last_name,
+                        birthday=birthday,
+                        phone_number=phone_number,
+                        comuna=comuna,
+                        gender=gender,
+                        email=email,
+                        password=password,
+                    )
+                    user.save()
+
+                    order = Order.objects.create(
+                        user=user,
+                        total=0,  # Inicialmente en 0, se actualizará más tarde
+                    )
+                    order.save()
+
+                    wishlist = request.POST.get('wishlist', '[]')
+                    wishlist_products = json.loads(wishlist)
+
+                    total = 0
+                    for item in wishlist_products:
+                        product = Product.objects.get(id=item['id'])
+                        quantity = item['quantity']
+                        subtotal = product.price * quantity
+                        total += subtotal
+
+                        OrderDetail.objects.create(
+                            order=order,
+                            product=product,
+                            quantity=quantity,
+                            unit_price=product.price,
+                            subtotal=subtotal,
+                        )
+
+                        order.total = total
+                        order.save()
+
+                    request.session['level_mensaje'] = 'alert-success'
+                    messages.success(request, 'Solicitud enviada. En breve le llegará el correo de confirmación')
+                    return redirect(reverse('contacto') + '?OK')
+                else:
+                    context = {
+                        'user_form': user_form,
+                        'order_form': order_form,
+                        'orderdetail_form': orderdetail_form,
+                    }
+                    request.session['level_mensaje'] = 'alert-success'
+                    messages.warning(request, 'ALGO NO FUNCIONA')
+                    return render(request, 'core/contacto.html', context)
         else:
             user_form = UserForm(prefix='user')
-            solicitud_form = SolicitudProductoForm(prefix='solicitud')
+            order_form = OrderForm(prefix='order')
+            orderdetail_form = OrderDetailForm(prefix='order-detail')
             
         context = {
             'user_form': user_form,
-            'solicitud_form': solicitud_form
+            'order_form': order_form,
+            'orderdetail_form': orderdetail_form,
         }
         return render(request, 'core/contacto.html', context)
     except Product.DoesNotExist:

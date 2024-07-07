@@ -1,5 +1,6 @@
 from django.urls import path
 from core import views
+from crud.views import update_order_status
 
 urlpatterns = [
     path ('', views.index, name='index'),
@@ -12,4 +13,5 @@ urlpatterns = [
     path ('breakfast/', views.breakfast, name='breakfast'),
     path ('about/', views.about, name='about'),
     path('editar-perfil', views.editar_perfil, name='editar-perfil'),
+    path('order/update-status/<int:order_id>/<str:status>/', update_order_status, name='update-order-status')
 ]

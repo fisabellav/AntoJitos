@@ -21,7 +21,7 @@ class Order(models.Model):
         verbose_name_plural = 'pedidos'
 
     def __str__(self):
-        return f"{self.user} - {self.product}"
+        return f"{self.user}"
 
 class OrderDetail(models.Model):
     order = models.ForeignKey(Order, verbose_name='Pedido', on_delete=models.CASCADE)
@@ -35,4 +35,4 @@ class OrderDetail(models.Model):
         verbose_name_plural = 'detalle solicitudes'
 
     def __str__(self):
-        return f"{self.user} - {self.product}"
+        return f"{self.product}"
