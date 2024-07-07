@@ -68,14 +68,14 @@
                             </thead>
                             <tbody class="table-body">
                                 {% for s in pedidos %}
-                                <tr>
-                                    <td>
+                                <tr data-order-id="{{s.id}}">
+                                    <td class="order-id">
                                         <h6><a class="card-link text-decoration-none" href="">{{s.id}}</a></h6>
                                     </td>
                                     <td>
                                         <h6>{{ s.user.name }} {{ s.user.last_name }}</h6>
                                     </td>
-                                    <td>
+                                    <td  class="order-status">
                                         <h6>
                                             <a class="card-link text-decoration-none" href="">
                                                 {{ s.get_status_display }}</a>
@@ -176,8 +176,27 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        
-                        
+                        const orderRow = document.querySelector(`tr[data-order-id="${orderId}"]`);
+                        const statusCell = orderRow.querySelector('.order-status');
+                        statusCell.querySelector('a').textContent = getStatusText(status); // Actualizar el enlace del estado
+
+                        function getStatusText(status) {
+                            switch (status) {
+                                case 'PC':
+                                    return 'Pendiente Confirmación';
+                                case 'CF':
+                                    return 'Confirmado';
+                                case 'EP':
+                                    return 'En preparación';
+                                case 'EN':
+                                    return 'Entregado';
+                                case 'CN':
+                                    return 'Cancelado';
+                                default:
+                                    return '';
+                            }
+                        }
+                                
                     } else {
                         alert('Error al actualizar el estado del pedido: ' + (data.error || 'Desconocido'));
                     }

@@ -153,7 +153,11 @@ function applyPhoneFormat(inputElement) {
 
             // Limita a 9 dígitos solo para Chile
             if (value.length >= 9) {
+                if (value.startsWith('9')) {
+                formattedValue = formattedValue.substring(0, 11);
+                } else if (value.startsWith('2')) {
                 formattedValue = formattedValue.substring(0, 12);
+                }
             }
 
         } else {

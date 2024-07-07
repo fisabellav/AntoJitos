@@ -4,6 +4,7 @@ from core.models import *
 from .forms import *
 from django.contrib import messages
 from django.http import JsonResponse
+from .utils import send_order_status_email  # Importa la función que envía el correo
 
 
 
@@ -66,9 +67,21 @@ def update_order_status(request, order_id, status):
         if status not in valid_statuses:
             return JsonResponse({'success': False, 'error': 'Estado no válido.'}, status=400)
 
-        order = Order.objects.get(id=order_id)
+        # Obtener el pedido
+        try:
+            order = Order.objects.get(id=order_id)
+        except ObjectDoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Pedido no encontrado.'}, status=404)
+
         order.status = status
         order.save()
+
+
+        # Enviar correo electrónico al usuario
+        user_email = order.user.email
+        user_name = order.user.name
+        order_id = order.id
+        send_order_status_email(user_email, user_name, order_id, status)
         return JsonResponse({'success': True})
     except Exception as e:
         # En caso de error, devolver una respuesta JSON con el mensaje de error
