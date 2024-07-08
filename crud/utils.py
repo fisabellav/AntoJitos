@@ -63,5 +63,35 @@ def send_order_status_email(user_email, user_name, order_id, new_status):
     
     response = mailer.send(mail_body)
 
+def send_verification_email(user_email, verification_url):
+    
+    mailer = emails.NewEmail(settings.MAILERSEND_API_KEY)
+    mail_body = {}
 
+    mail_from = {
+        "name": "AntoJitos",
+        "email": settings.DEFAULT_FROM_EMAIL,
+    }
 
+    recipients = [
+        {
+            "email": user_email,
+        }
+    ]
+
+    subject = 'Completa tu registro en nuestro sitio'
+    html_content = f"""
+    <p>Para completar tu registro, haz clic en el siguiente enlace:</p>
+    <p><a href="{verification_url}">Completar registro</a></p>
+    """
+
+    # Configurar el correo
+    mailer.set_mail_from(mail_from, mail_body)
+    mailer.set_mail_to(recipients, mail_body)
+    mailer.set_subject(subject, mail_body)
+    mailer.set_html_content(html_content, mail_body)
+
+    # using print() will also return status code and data
+    response = mailer.send(mail_body)
+
+    return response

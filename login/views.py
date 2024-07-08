@@ -9,21 +9,26 @@ import bcrypt
 import json
 from django.http import JsonResponse
 import requests
+from mailersend import emails
+from django.conf import settings
+from crud.utils import send_verification_email # Importa la función que envía el correo
+
 
 
 def signup(request):
     if request.method == 'GET':
+        user_form = UserForm(prefix='')
+            
         context = {
             'gender_choices': UserForm.GENERO_CHOICES,
             'comuna_choices': Comuna.objects.all(),
+            'user_form': user_form,
         }
         return render(request, 'login/signup.html', context)
     
     if request.method == 'POST':
-        prefijo_telefono = request.POST.get('prefijo_telefono', '')
-        phone_number = request.POST.get('phone_number', '')
-        phone_number = ''.join(phone_number.split())
-        phone_number = prefijo_telefono + phone_number
+        phone_number = request.POST.get('formatted_phone_number')
+            
 
         postData = request.POST.copy()
         postData['phone_number'] = phone_number
@@ -37,7 +42,7 @@ def signup(request):
             request.session['registro_nombre'] = request.POST.get('name', '')
             request.session['registro_apellido'] = request.POST.get('last_name', '')
             request.session['registro_email'] = request.POST.get('email', '')
-            request.session['registro_phone'] = request.POST.get('phone_number', '')
+            request.session['registro_phone'] = request.POST.get('formatted_phone_number', '')
             request.session['registro_comuna'] = request.POST.get('comuna', '')
             request.session['registro_genero'] = request.POST.get('gender', '')
             request.session['registro_birthday'] = request.POST.get('birthday', '')
@@ -93,13 +98,8 @@ def signup(request):
                     verification_link = reverse('complete-registration', kwargs={'token': verification_token})
                     verification_url = request.build_absolute_uri(verification_link)
                     
-                    send_mail(
-                            'Completa tu registro en nuestro sitio',
-                            f'Para completar tu registro, haz clic en el siguiente enlace: {verification_url}',
-                            settings.DEFAULT_FROM_EMAIL,
-                            [existing_user.email],
-                            fail_silently=False,
-                    )
+                    send_verification_email(existing_user.email, verification_url)
+
                     request.session['level_mensaje'] = 'alert-warning'
                     messages.warning(request, "El correo o teléfono ya están registrados. Se ha enviado un correo para completar tu registro.")
                     return redirect(reverse('login'))
@@ -193,7 +193,6 @@ def login(request):
                     }
 
                     request.session['usuario'] = usuario
-                    print(usuario)
 
                     if usuario_registrado.rol == 'ADMIN' :
                         messages.success(request,"Ingreso exitoso")

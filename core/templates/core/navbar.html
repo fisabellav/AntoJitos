@@ -12,21 +12,22 @@
             <li><a href="{% url 'about' %}">About</a></li>
             <div class="items">
                 {% if request.session.usuario %}
-                {% if request.session.usuario.rol == 'ADMIN' %}
-                <a class="nav-link" href="{% url 'product-list' %}">Vista admin</a>
-                {% endif %}
-                {% if request.session.usuario.rol == 'USER' %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false"> <i class="fa-solid fa-user"></i>
-                        {{request.session.usuario.name}}
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{% url 'add-product' %}">Editar datos</a></li>
-                        <li><a href="/accounts/logout" class="dropdown-item">Cerrar sesión</a></li>
-                    </ul>
-                </li>
-                {% endif %}
+                    {% if request.session.usuario.rol == 'ADMIN' %}
+                    <a class="nav-link" href="{% url 'product-list' %}">Vista admin</a>
+                    {% endif %}
+                    {% if request.session.usuario.rol == 'USER' %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false"> <i class="fa-solid fa-user"></i>
+                            {{request.session.usuario.name}}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'editar-perfil' id=request.session.usuario.id %}">Editar datos</a></li>
+                            <li><a class="dropdown-item" href="{% url 'my-orders' %}">Mis pedidos</a></li>
+                            <li><a href="/accounts/logout" class="dropdown-item">Cerrar sesión</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
                 {% else %}
                 <a href="/accounts/login" class="action_btn"><i class="fa-solid fa-user"></i></a>
                 {% endif %}

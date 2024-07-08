@@ -29,24 +29,20 @@
                 <div id="filters" class="p-4">
                     <h3 class="filter-title">Filtros</h3>
 
-                    <!-- Sabor -->
-                    <div class="filter-group">
-                        <h3 class="filter-group-title">Categoría</h3>
-                        {% if filtro_sabor %}
-                        <select id="flavor-filter" name="flavors" class="form-select myselect mt-2" multiple>
-                            {% for f in filtro_sabor %}
-                            <option value="{{ f }}" {% if f in selected_flavors %}selected{% endif %}>{{ f }}</option>
-                            {% endfor %}
-                        </select>
-                        {% else %}
-                        <p class="my-2">No hay filtros disponibles</p>
-                        {% endif %}
-                    </div>
-
-                    <!-- Añadir botón para aplicar filtros -->
-                    <div class="apply-filters mt-3">
-                        <button id="apply-filters-btn" class="product-btn mt-2">Aplicar Filtros</button>
-                    </div>
+                    <form method="get" action="{% url 'order-list' %}">
+                        <div class="form-group">
+                            <label for="estado-filter" class="form-label mt-2">Filtrar por Estado:</label>
+                            <select id="estado-filter" name="estado" class="form-control">
+                                <option value="">Todos</option>
+                                {% for key, value in estado_choices %}
+                                    <option value="{{ key }}" {% if key == estado_seleccionado %}selected{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="apply-filters mt-3">
+                            <button type="submit" id="apply-filters-btn" class="product-btn">Aplicar filtros</button>
+                        </div>
+                    </form>
                 </div>
 
 

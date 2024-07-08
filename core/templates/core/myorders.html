@@ -1,0 +1,86 @@
+{% extends 'core/base.html' %}
+{% block title %}Mis Pedidos{% endblock %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'crud/css/product-list.css' %}">
+{% endblock %}
+
+{% block navbar_script %}
+<script>
+    const backgroundImageUrl = "{% static 'core/img/navbar4.png' %}";
+    const navbarElement = document.querySelector('.myNavbar');
+    navbarElement.style.backgroundImage = `url(${backgroundImageUrl})`;
+</script>
+{% endblock %}
+
+
+
+{% block first_content %}
+
+
+<div class="mycontainer">
+    {% if messages %}
+    <div class="alert {{ request.session.level_mensaje }} alert-dismissible" role="alert">
+        <ul>
+            {% for message in messages %}
+            <li><strong>{{ message }}</strong></li>
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </ul>
+    </div>
+    {% endif %}
+    
+    <div class="container-fluid order-panel px-auto">
+        <div class="row m-0">
+            <div class="col-lg-12 p-0">
+                <h3 class="filter-title my-4">Mis Pedidos</h3>
+                <div class="py-3 my-4 container-fluid mx-auto">
+                    <div class="table-responsive">
+                        <table class="table myTable table-hover">
+                            <thead class="table-head">
+                                <tr>
+                                    <th>ID Pedido</th>
+                                    <th>Estado</th>
+                                    <th>Total</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-body">
+                                {% for order in orders %}
+                                <tr data-order-id="{{ order.id }}">
+                                    <td class="order-id">
+                                        <h6><a class="card-link text-decoration-none" href="">{{ order.id }}</a></h6>
+                                    </td>
+                                    <td class="order-status">
+                                        <h6>{{ order.get_status_display }}</h6>
+                                    </td>
+                                    <td>
+                                        <p>{{ order.total }}</p>
+                                    </td>
+                                    <td class="tbActions">
+                                        <div class="myActions container">
+                                            <div class="row row-cols-3 text-center pt-2">
+                                                <div class="col-4">
+                                                    <a class="btn detalle-btn" href="{% url 'myorder-detail' id=order.id %}">Detalle</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block my_js %}
+<script src="{% static 'crud/js/funciones.js' %}"></script>
+{% endblock %}

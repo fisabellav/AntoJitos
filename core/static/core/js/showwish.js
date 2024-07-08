@@ -7,6 +7,7 @@ let iconCart = document.querySelector('.icon-cart');
 let closeCart = document.querySelector('.close');
 
 
+
 iconCart.addEventListener('click', () => {
     const cartTab = document.querySelector('.cartTab');
     cartTab.classList.toggle('showCart');

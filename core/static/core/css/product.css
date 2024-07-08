@@ -101,6 +101,32 @@ margin-left: 0;
     transition: all 0.2s;
 }
 
+button.comprar{
+    color: #ececec;
+    display: inline-block;
+    text-decoration: none;
+    background-color: #191919;
+    padding: 1.2rem 2.5rem;
+    border-radius: 1rem;
+    margin-top: 1rem;
+    font-size: 14px;
+    transition: all 0.2s;
+
+}
+
+.cartTab button.comprar{
+    color: #ececec;
+    display: inline-block;
+    text-decoration: none;
+    background-color: #5f5d6e;
+    padding: 1.2rem 2.5rem;
+    border-radius: 0;
+    margin-top: 1rem;
+    font-size: 14px;
+    transition: all 0.2s;
+
+}
+
 .comprar:hover {
     transform: scale(1.1);
 }
@@ -111,6 +137,10 @@ margin-left: 0;
     width: 80%;
     margin: 40px 100px;
     border-radius: 1rem;
+}
+
+.editar-perfil{
+    margin: 100px;
 }
 
 .iti {

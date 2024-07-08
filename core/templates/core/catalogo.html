@@ -48,6 +48,16 @@
 </div>
 
 <div class="container-fluid">
+    {% if messages %}
+    <div class="alert {{ request.session.level_mensaje }} alert-dismissible" role="alert">
+        <ul>
+            {% for message in messages %}
+            <li><strong>{{message}}</strong></li>
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </ul>
+    </div>
+    {% endif %}
     <div class="row m-0">
         <div id="myFilters" class="col-3">
             <!-- FILTROS -->
@@ -115,6 +125,7 @@
                                 {% endif %}
                                 <div class="product-info">
                                     <h4 class="product-title">{{ p.product }}</h4>
+                                    <p class="product-description" id="product-price" style="display: none;">{{p.price}}</p>
                                 </div>
                                 <div class="button-container">
                                     <a class="product-btn" href="{% url 'producto' id=p.id %}">Ver Detalles</a>

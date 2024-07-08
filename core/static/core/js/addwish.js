@@ -11,15 +11,16 @@ listProductHTML.addEventListener('click', (event) => {
         let productElement = positionClick.closest('.product');
         let productId = productElement.dataset.id;
         let productName = productElement.querySelector('.product-title').textContent;
-        
+        let productPrice = parseFloat(productElement.querySelector('#product-price').textContent);
         let productImage = productElement.querySelector('img').src;
 
         let productData = {
             id: productId,
             name: productName,
+            price: productPrice,
             image: productImage,
         };
-        console.log(productId)
+        console.log(productPrice)
         addToCart(productData);
     }
 });

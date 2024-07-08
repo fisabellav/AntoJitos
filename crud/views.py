@@ -37,13 +37,22 @@ def order_list(request):
     if 'usuario' in request.session:
         usuario = request.session['usuario']
         if usuario.get('rol') == 'ADMIN':
+            # Obtener todas las órdenes
             pedidos = Order.objects.all()
 
-            
+            # Obtener las opciones de estado del modelo Order
+            estado_choices = Order.STATUS_CHOICES
+
+            # Filtrar por estado si se envía un estado válido en la solicitud GET
+            estado_seleccionado = request.GET.get('estado')
+            if estado_seleccionado in dict(estado_choices).keys():
+                pedidos = pedidos.filter(status=estado_seleccionado)
+
             context = {
                 'pedidos': pedidos,
-                'gender_choices': Order.STATUS_CHOICES,
-                'request': request
+                'estado_choices': estado_choices,  # Pasar las opciones de estado al contexto
+                'estado_seleccionado': estado_seleccionado,  # Pasar el estado seleccionado para mantener el filtro
+                'request': request,
             }
             return render(request, 'crud/order-list.html', context)
         else:
@@ -56,36 +65,50 @@ def order_list(request):
         return redirect(reverse('login'))
 
 def order_detail(request, id):
-    order = get_object_or_404(Order, id=id)
-    detalles = OrderDetail.objects.filter(order=order)
-    return render(request, 'crud/order-detail.html', {'order': order, 'detalles': detalles})
+    if 'usuario' in request.session:
+        usuario = request.session['usuario']
+        if usuario.get('rol') == 'ADMIN':
+            order = get_object_or_404(Order, id=id)
+            detalles = OrderDetail.objects.filter(order=order)
+            return render(request, 'crud/order-detail.html', {'order': order, 'detalles': detalles})
+    else:
+        messages.error(request, "No tienes permisos para ver esta página.")
+        request.session['level_mensaje'] = 'alert-danger'
+        return redirect(reverse('login'))
 
 def update_order_status(request, order_id, status):
-    try:
-        # Validar que el estado enviado esté entre las opciones válidas
-        valid_statuses = ['PC', 'CF', 'EP', 'EN', 'CN']
-        if status not in valid_statuses:
-            return JsonResponse({'success': False, 'error': 'Estado no válido.'}, status=400)
+    if 'usuario' in request.session:
+        usuario = request.session['usuario']
+        if usuario.get('rol') == 'ADMIN':
+            try:
+                # Validar que el estado enviado esté entre las opciones válidas
+                valid_statuses = ['PC', 'CF', 'EP', 'EN', 'CN']
+                if status not in valid_statuses:
+                    return JsonResponse({'success': False, 'error': 'Estado no válido.'}, status=400)
 
-        # Obtener el pedido
-        try:
-            order = Order.objects.get(id=order_id)
-        except ObjectDoesNotExist:
-            return JsonResponse({'success': False, 'error': 'Pedido no encontrado.'}, status=404)
+                # Obtener el pedido
+                try:
+                    order = Order.objects.get(id=order_id)
+                except ObjectDoesNotExist:
+                    return JsonResponse({'success': False, 'error': 'Pedido no encontrado.'}, status=404)
 
-        order.status = status
-        order.save()
+                order.status = status
+                order.save()
 
 
-        # Enviar correo electrónico al usuario
-        user_email = order.user.email
-        user_name = order.user.name
-        order_id = order.id
-        send_order_status_email(user_email, user_name, order_id, status)
-        return JsonResponse({'success': True})
-    except Exception as e:
-        # En caso de error, devolver una respuesta JSON con el mensaje de error
-        return JsonResponse({'success': False, 'error': str(e)})
+                # Enviar correo electrónico al usuario
+                user_email = order.user.email
+                user_name = order.user.name
+                order_id = order.id
+                send_order_status_email(user_email, user_name, order_id, status)
+                return JsonResponse({'success': True})
+            except Exception as e:
+                # En caso de error, devolver una respuesta JSON con el mensaje de error
+                return JsonResponse({'success': False, 'error': str(e)})
+        else:
+            messages.error(request, "No tienes permisos para ver esta página.")
+            request.session['level_mensaje'] = 'alert-danger'
+            return redirect(reverse('login'))
 
 def filter_by_category(request, category):
     try:

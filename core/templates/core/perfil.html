@@ -21,22 +21,20 @@
 {% endblock %}
 
 {% block first_content %}
-<div class="formulario mx-auto">
-    <form id="formulario" class="row g-2 p-5 custom-validation" action="" method="post" enctype="multipart/form-data">
+<div class="formulario editar-perfil mx-auto">
+    <form id="formulario" class="row g-2 p-5" action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <h3>Contáctanos</h3>
         <div class="row mt-3">
             <div class="col-6">
                 <label for="idNombre" class="form-label">Nombre</label>
                 {{form.name}}
-                <small id="error_nombre_min" class="text-danger">Debes ingresar tu nombre</small>
-                <small id="error_nombre_max" class="text-danger">El nombre excede el largo máximo permitido</small>
+                
             </div>
             <div class="col-6">
                 <label for="idApellido" class="form-label">Apellidos</label>
                 {{form.last_name}}
-                <small id="error_apellido_min" class="text-danger">Debes ingresar tu apellido</small>
-                <small id="error_apellido_max" class="text-danger">El apellido excede el largo máximo permitido</small>
+                
             </div>
         </div>
         <div class="row mt-3">
@@ -45,7 +43,7 @@
                 <div class="">
                     <input type="hidden" id="prefijo-hidden" name="prefijo_telefono" value="+" /> <!-- Campo oculto para almacenar el prefijo -->
                     {{form.phone_number}}
-                    <small id="error_fono" class="text-danger">Debes ingresar un teléfono para contactarte</small>
+                    
                 </div>
             </div>
             <div class="col-6">
@@ -53,8 +51,7 @@
                 <div class="input-group">
                     {{form.birthday}}
                 </div>
-                <small id="error_nacimiento" class="text-danger">Debes ingresar fecha de nacimiento</small>
-                <small id="error_fecha" class="text-danger">Debes ingresar fecha válida</small>
+                
             </div>
         </div>
         <div class="row mt-3">
@@ -65,32 +62,20 @@
             <div class="col-6">
                 <label for="comuna-select" class="form-label">Comuna</label>
                 {{form.comuna}}
-                <small id="error_comuna" class="text-danger">Debes ingresar una comuna</small>
-            </div>
-            <div class="row mx-auto">
-                <div class="col-12 product-table ">
-                    <h4 class="pt-3 pb-3 ps-3 table-titulo" >Productos en la lista de deseos</h4>
-                    <div id="wishlist-products" class="listCart">
-                        <!-- Aquí se mostrarán los productos de la lista de deseos -->
-                    </div>
-                </div>
             </div>
         </div>
-        <input type="hidden" name="wishlist" id="wishlist">
-        <div class="col-12 my-4">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="gridCheck">
-                <label class="form-check-label" for="gridCheck">
-                    No soy un robot
-                </label>
+        <div class="row mt-3">
+            <div class="col-12">
+                <label for="idPassword" class="form-label">Contraseña</label>
+                {{form.password}}
             </div>
-            <small id="error_checkbox" class="text-danger" >Debes chequear la casilla</small>
         </div>
-        <div class="col-12">
+
+        
+        <div class="col-12 mt-5">
             <button type="submit" class="btn btn-primary">Enviar</button>
         </div>
     </form>
 </div>
 {% endblock %}
 
-{% block extra_js %}

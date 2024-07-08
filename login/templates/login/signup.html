@@ -51,6 +51,7 @@
                             <input type="hidden" id="prefijo-hidden" name="prefijo_telefono" value="+" />
                             <input class="form-control" type="text" name="phone_number" id="idFono"
                                 value="{{ phone_number }}" maxlength="15" required>
+                            {{user_form.formatted_phone_number}}
                         </div>
                         <small id="error_fono" class="text-danger">Debes ingresar un teléfono para contactarte</small>
 

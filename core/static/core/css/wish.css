@@ -14,7 +14,7 @@
     right: -400px;
     bottom: 0;
     display: none;
-    grid-template-rows: 70px 1fr 70px;
+    grid-template-rows: 70px 1fr 20px 50px;
     padding-left: 10px;
     transition: .5s;
     z-index: 1000;
@@ -58,9 +58,21 @@ body.showCart .cartTab {
     font-size: 15px;
 }
 
+.cartTab button.comprar, .cartTab .close{
+    color: #ececec;
+    display: inline-block;
+    text-decoration: none;
+    background-color: #5f5d6e;
+    padding: 1.2rem 2.5rem;
+    border-radius: 0;
+    margin-top: 1rem;
+    font-size: 14px;
+    transition: all 0.2s;
+
+}
 
 .cartTab .close {
-    background-color: gray;
+    background-color: #807d94;
 }
 
 .listCart .item img {
@@ -69,7 +81,7 @@ body.showCart .cartTab {
 
 .listCart .item {
     display: grid;
-    grid-template-columns: 70px 150px 100px 1fr;
+    grid-template-columns: 70px 120px 50px 70px 20px;
     gap: 10px;
     text-align: center;
     align-items: center;

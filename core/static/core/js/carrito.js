@@ -28,6 +28,7 @@ export const addToCart = (productData) => {
         cart = [{
             id: productData.id,
             name: productData.name,
+            price: productData.price,
             image: productData.image,
             quantity: productData.quantity || 1,  // Utiliza productData.quantity si está presente, de lo contrario 1
         }];
@@ -35,6 +36,7 @@ export const addToCart = (productData) => {
         cart.push({
             id: productData.id,
             name: productData.name,
+            price: productData.price,
             image: productData.image,
             quantity: productData.quantity || 1,  // Utiliza productData.quantity si está presente, de lo contrario 1
         });
@@ -75,7 +77,10 @@ export const addCartToHTML = () => {
     let totalQuantity = 0;
     if (cart.length > 0) {
         cart.forEach(item => {
+            let subtotal = item.price * item.quantity;
             totalQuantity = totalQuantity + item.quantity;
+            console.log(`Item: ${item.name}, Price: ${item.price}, Quantity: ${item.quantity}, Subtotal: ${subtotal}`);
+
             let newItem = document.createElement('div');
             newItem.classList.add('item');
             newItem.dataset.id = item.id;
@@ -87,7 +92,9 @@ export const addCartToHTML = () => {
         <div class="name">
             ${item.name}
         </div>
-        
+        <div class="subtotal">
+            $${Math.floor(subtotal)}   <!-- Mostrar el precio con dos decimales -->
+        </div>
         <div class="quantity">
             <span class="minus"><</span>
             <span>${item.quantity}</span>

@@ -29,36 +29,37 @@
 
 
 
-    <!-- CATEGORIAS -->
-    <div class="categories">
-        <div class="category">
-            <a href="{% url 'catalogo' %}">
-                <img src="{% static 'core/img/categorias/catalogo.jpg' %}" alt="Categoría 1">
-                <h4 class="category-title">Catálogo</h4>
-            </a>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <h1 class=" my-4">Sobre Nosotros</h1>
+                <p class="">Somos una empresa dedicada a la elaboración de galletas y desayunos, con
+                    ingredientes de la mejor calidad y con un sabor único.</p>
+            </div>
+            <div class="col-12">
+                <h1 class=" my-4">Misión</h1>
+                <p class="">Nuestra misión es ofrecer productos de calidad, con ingredientes frescos y
+                    naturales, para que nuestros clientes disfruten de un sabor único.</p>
+            </div>
+            <div class="col-12">
+                <h1 class=" my-4">¿Dónde encontrarnos?</h1>
+            </div>
         </div>
-        <div class="category">
-            <a href="">
-                <img src="{% static 'core/img/categorias/galletas.jpg' %}" alt="Categoría 2">
-                <h4 class="category-title">Galletas</h4>
-            </a>
-        </div>
-        <div class="category">
-            <a href="">
-                <img src="{% static 'core/img/categorias/desayunos.jpg' %}" alt="Categoría 2">
-                <h4 class="category-title">Desayunos</h4>
-            </a>
+        <div class="mb-2 container-fluid">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3325.5921609091843!2d-70.5968589!3d-33.537987799999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662d0ecc05693b1%3A0x638668ea66c40777!2sTemuco%20365%2C%208261035%20La%20Florida%2C%20Regi%C3%B3n%20Metropolitana!5e0!3m2!1ses-419!2scl!4v1720414621203!5m2!1ses-419!2scl"
+                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     </div>
-{% endblock %}
+
+            
+
+            {% endblock %}
 
 
-{% block my_js %}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-        crossorigin="anonymous"></script>
-{% endblock %}
-
-
-
-
+            {% block my_js %}
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+                crossorigin="anonymous"></script>
+            {% endblock %}

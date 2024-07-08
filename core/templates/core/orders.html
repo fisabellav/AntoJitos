@@ -1,0 +1,69 @@
+{% extends 'core/base.html' %}
+{% load custom_filters %}
+{% block title %}Detalle del Pedido{% endblock %}
+
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'crud/css/form-product.css' %}">
+<link rel="stylesheet" href="{% static 'crud/css/detail.css' %}">
+{% endblock %}
+
+{% block navbar_script %}
+<script>
+    const backgroundImageUrl = "{% static 'core/img/navbar4.png' %}";
+    const navbarElement = document.querySelector('.myNavbar');
+    navbarElement.style.backgroundImage = `url(${backgroundImageUrl})`;
+</script>
+{% endblock %}
+
+{% block first_content %}
+<div class="container mycont">
+    <div class="row">
+        <div class="col-12">
+            <h3>Detalle del Pedido #{{ order.id }}</h3>
+            <ul class="list-unstyled">
+                <li><strong>Número de pedido:</strong> {{ order.id }}</li>
+                <li><strong>Estado:</strong> {{ order.get_status_display }}</li>
+                <li><strong>Fecha de creación:</strong> {{ order.created_at }}</li>
+                <li><strong>Total:</strong> {{ order.total }}</li>
+            </ul>
+
+            <h4>Productos</h4>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Imagen</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in order_details %}
+                    <tr>
+                        <td>{{ p.product }}</td>
+                        <td>
+                            {% if p.product.image %}
+                            <img class="img-fluid myimg-order" src="{{ p.product.image.url }}" alt="">
+                            {% else %}
+                            <img class="img-fluid myimg-order" src="{% static 'crud/img/image_not_found.jpg' %}" alt="">
+                            {% endif %}
+                        </td>
+                        <td>{{ p.quantity }}</td>
+                        <td>{{ p.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <a class="btn btn-light" href="{% url 'my-orders' %}">Volver</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block my_js %}
+<script src="{% static 'crud/js/funciones.js' %}"></script>
+{% endblock %}
